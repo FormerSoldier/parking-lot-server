@@ -5,10 +5,10 @@ import lombok.Data;
 import org.apache.commons.lang3.StringUtils;
 import org.hibernate.annotations.*;
 
+import javax.persistence.*;
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.Table;
+import javax.validation.constraints.NotNull;
 import java.util.Arrays;
 import java.util.List;
 
@@ -17,16 +17,30 @@ import java.util.List;
 @DynamicUpdate
 @SQLDelete(sql = "UPDATE USER SET DELETE_FLAG = TRUE WHERE ID = ?")
 @Where(clause = "DELETE_FLAG = " + false)
+@Table(name = "USER_MASTER")
 public class User extends com.itmuch.lightsecurity.jwt.User {
 
+    @Column
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
+    @NotNull
+    @Column(unique = true)
     private String username;
+
+    @NotNull
+    @Column
     private String name;
+
+    @NotNull
+    @Column
     private String password;
+
+    @Column
     private String roles;
+
+    @Column
     private boolean deleteFlag;
 
     @Override

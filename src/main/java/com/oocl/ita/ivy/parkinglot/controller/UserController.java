@@ -1,7 +1,6 @@
-package com.oocl.ita.ivy.parkinglot.entity.controller;
+package com.oocl.ita.ivy.parkinglot.controller;
 
 import com.itmuch.lightsecurity.annotation.PreAuthorize;
-import com.itmuch.lightsecurity.jwt.UserOperator;
 import com.oocl.ita.ivy.parkinglot.entity.User;
 import com.oocl.ita.ivy.parkinglot.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
