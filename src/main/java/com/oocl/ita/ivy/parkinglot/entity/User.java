@@ -1,6 +1,7 @@
 package com.oocl.ita.ivy.parkinglot.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 import org.apache.commons.lang3.StringUtils;
 import org.hibernate.annotations.*;
@@ -71,10 +72,12 @@ public class User extends com.itmuch.lightsecurity.jwt.User {
         this.name = name;
     }
 
+    @JsonIgnore
     public String getPassword() {
         return password;
     }
 
+    @JsonProperty
     public void setPassword(String password) {
         this.password = password;
     }

@@ -3,11 +3,16 @@ package com.oocl.ita.ivy.parkinglot.service;
 import com.itmuch.lightsecurity.jwt.JwtOperator;
 import com.itmuch.lightsecurity.jwt.UserOperator;
 import com.oocl.ita.ivy.parkinglot.entity.User;
+import com.oocl.ita.ivy.parkinglot.entity.enums.BusinessExceptionType;
 import com.oocl.ita.ivy.parkinglot.entity.enums.Role;
+import com.oocl.ita.ivy.parkinglot.exception.BusinessException;
+import com.oocl.ita.ivy.parkinglot.exception.UsernameOrPasswordIncorrectException;
 import com.oocl.ita.ivy.parkinglot.repository.UserRepository;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.Optional;
 
 
 @Service
@@ -23,13 +28,10 @@ public class UserService {
 
 
     public String login(User user) {
-        User savedUser = userRepository.findByUsername(user.getUsername());
-        if (savedUser != null) {
-            if (DigestUtils.sha256Hex(user.getPassword()).equals(savedUser.getPassword())) {
-                return jwtOperator.generateToken(savedUser);
-            }
-        }
-        throw new RuntimeException("Username or password error");
+        return userRepository.findByUsername(user.getUsername())
+                .filter(savedUser -> DigestUtils.sha256Hex(user.getPassword()).equals(savedUser.getPassword()))
+                .map(savedUser -> jwtOperator.generateToken(savedUser))
+                .orElseThrow(UsernameOrPasswordIncorrectException::new);
     }
 
     public User register(User user) {
@@ -42,4 +44,7 @@ public class UserService {
         return userOperator.getUser();
     }
 
+    public User getUserByUsername(String username) {
+        return userRepository.findByUsername(username).orElseThrow(() -> new BusinessException(BusinessExceptionType.RECODE_NOT_FOUNT));
+    }
 }
