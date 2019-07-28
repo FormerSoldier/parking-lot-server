@@ -1,63 +1,27 @@
 package com.oocl.ita.ivy.parkinglot.entity;
 
+import lombok.Data;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.validation.constraints.NotNull;
 
 @Entity
-@GenericGenerator(name = "jpa-uuid", strategy = "uuid")
+@Data
 public class ParkingLot {
     @Id
-    @GeneratedValue(generator = "jpa-uuid")
+    @GeneratedValue(generator = "uuid")
+    @GenericGenerator(name = "uuid", strategy = "uuid")
     private String id;
     @Column
+    @NotNull
     private String name;
     @Column
+    @NotNull
     private int capacity;
     @Column
     private String address;
-
-    public ParkingLot() {
-    }
-
-    public ParkingLot(String name, int capacity, String address) {
-        this.name = name;
-        this.capacity = capacity;
-        this.address = address;
-    }
-
-    public String getId() {
-        return id;
-    }
-
-    public void setId(String id) {
-        this.id = id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public int getCapacity() {
-        return capacity;
-    }
-
-    public void setCapacity(int capacity) {
-        this.capacity = capacity;
-    }
-
-    public String getAddress() {
-        return address;
-    }
-
-    public void setAddress(String address) {
-        this.address = address;
-    }
 }

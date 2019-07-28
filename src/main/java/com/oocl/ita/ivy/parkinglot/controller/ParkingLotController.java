@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/parkinglot")
+@RequestMapping("/parking-lot")
 public class ParkingLotController {
     @Autowired
     private ParkingLotService parkingLotService;

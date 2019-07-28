@@ -24,23 +24,11 @@ public class ParkingLotService {
     }
 
     public ParkingLot modifyParkingLot(ParkingLot parkingLot) {
-        List<ParkingLot> list = new ArrayList<>();
-        String id = parkingLot.getId();
-        int capacity = parkingLot.getCapacity();
-        String name = parkingLot.getName();
-        ParkingLot getParkingLot = getParkingLotById(id);
-        getParkingLot.setCapacity(capacity);
-        getParkingLot.setAddress(name);
         return parkingLotRepository.save(parkingLot);
     }
 
     public ParkingLot getParkingLotById(String id) {
-        Optional<ParkingLot> optional = parkingLotRepository.findById(id);
-        ParkingLot parkingLot = null;
-        if (optional.isPresent()) {
-            parkingLot = optional.get();
-        }
-        return parkingLot;
+        return parkingLotRepository.findById(id).orElseThrow(() -> new RuntimeException("Record not found"));
     }
 
     public void deleteParkingLotById(String id) {
