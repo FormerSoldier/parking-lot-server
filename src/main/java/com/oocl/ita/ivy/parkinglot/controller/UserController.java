@@ -25,9 +25,14 @@ public class UserController {
         return ResponseEntity.ok(userService.login(user));
     }
 
+    @GetMapping("/principal")
+    public com.itmuch.lightsecurity.jwt.User getUserPrincipal() {
+        return userService.getUserPrincipal();
+    }
+
     @GetMapping("/me")
-    public com.itmuch.lightsecurity.jwt.User roleTest() {
-        return userService.getSecurityUser();
+    public User getUser() {
+        return userService.getCurrentUser();
     }
 
     @GetMapping("/{username}")

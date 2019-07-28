@@ -40,11 +40,15 @@ public class UserService {
         return userRepository.save(user);
     }
 
-    public com.itmuch.lightsecurity.jwt.User getSecurityUser() {
+    public com.itmuch.lightsecurity.jwt.User getUserPrincipal() {
         return userOperator.getUser();
     }
 
     public User getUserByUsername(String username) {
         return userRepository.findByUsername(username).orElseThrow(() -> new BusinessException(BusinessExceptionType.RECODE_NOT_FOUNT));
+    }
+
+    public User getCurrentUser() {
+        return userRepository.findByUsername(userOperator.getUser().getUsername()).orElseThrow(() -> new BusinessException(BusinessExceptionType.RECODE_NOT_FOUNT));
     }
 }
