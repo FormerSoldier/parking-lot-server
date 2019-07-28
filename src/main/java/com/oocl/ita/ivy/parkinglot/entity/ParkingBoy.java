@@ -17,7 +17,6 @@ public class ParkingBoy {
     @GenericGenerator(name = "uuid", strategy = "uuid")
     private String id;
 
-    @NotNull
     private String name;
 
     private Gender gender;
