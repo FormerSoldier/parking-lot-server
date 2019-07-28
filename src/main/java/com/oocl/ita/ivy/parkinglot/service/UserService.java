@@ -28,7 +28,7 @@ public class UserService {
     public String login(User user) {
         return Optional.of(userRepository.findByUsername(user.getUsername()))
                 .filter(savedUser -> DigestUtils.sha256Hex(user.getPassword()).equals(savedUser.getPassword()))
-                .map(savedUser -> jwtOperator.generateToken(user))
+                .map(savedUser -> jwtOperator.generateToken(savedUser))
                 .orElseThrow(UsernameOrPasswordIncorrectException::new);
     }
 
@@ -42,4 +42,7 @@ public class UserService {
         return userOperator.getUser();
     }
 
+    public User getUserByUsername(String username) {
+        return userRepository.findByUsername(username);
+    }
 }

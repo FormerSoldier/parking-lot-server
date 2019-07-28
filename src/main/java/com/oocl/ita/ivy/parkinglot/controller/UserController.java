@@ -29,4 +29,10 @@ public class UserController {
     public com.itmuch.lightsecurity.jwt.User roleTest() {
         return userService.getSecurityUser();
     }
+
+    @GetMapping("/{username}")
+    public User getUserByUsername(@PathVariable("username") String username) {
+        return userService.getUserByUsername(username);
+    }
+
 }
