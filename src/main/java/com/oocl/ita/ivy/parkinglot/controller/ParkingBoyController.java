@@ -9,32 +9,33 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
+@RequestMapping("/parkingboys")
 public class ParkingBoyController {
 
     @Autowired
     private ParkingBoyService parkingBoyService;
 
-    @GetMapping(path = "/parkingboys")
+    @GetMapping
     public List<ParkingBoy> findAllParkingBoys() {
         return parkingBoyService.findAllParkingBoys();
     }
 
-    @GetMapping(path = "/parkingboys/{id}")
+    @GetMapping(path = "/{id}")
     public ParkingBoy find(@PathVariable String id) throws Exception {
         return parkingBoyService.find(id);
     }
 
-    @PostMapping(path = "/parkingboys")
+    @PostMapping
     public ParkingBoy add(@RequestBody ParkingBoy parkingBoy) {
         return parkingBoyService.save(parkingBoy);
     }
 
-    @PutMapping(path = "/parkingboys")
+    @PutMapping
     public ParkingBoy update(@RequestBody ParkingBoy parkingBoy) {
         return parkingBoyService.save(parkingBoy);
     }
 
-    @DeleteMapping(path = "/parkingboys/{id}")
+    @DeleteMapping(path = "/{id}")
     public void delete(@PathVariable String id) {
         parkingBoyService.delete(id);
     }
