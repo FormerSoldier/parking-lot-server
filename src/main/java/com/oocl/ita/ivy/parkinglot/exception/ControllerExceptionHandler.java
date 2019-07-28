@@ -20,4 +20,10 @@ public class ControllerExceptionHandler {
         result.put("message", "Username or password incorrect.");
         return result;
     }
+
+    @ExceptionHandler(BusinessException.class)
+    @ResponseBody
+    public ExceptionResponseEntity handleBusinessException(BusinessException e) {
+        return ExceptionResponseEntity.convert(e);
+    }
 }
