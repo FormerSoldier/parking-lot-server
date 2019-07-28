@@ -4,5 +4,5 @@ CREATE TABLE `parking_lot` (
       `capacity` int(11) DEFAULT NULL,
       `name` varchar(255) DEFAULT NULL,
       PRIMARY KEY (`id`)
- ) ENGINE=InnoDB DEFAULT CHARSET=utf-8;
+ ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
