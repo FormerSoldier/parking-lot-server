@@ -40,6 +40,12 @@ public class UserService {
         return userRepository.save(user);
     }
 
+    public User register(User user, Role role){
+        user.setRoles(role.getRole());
+        user.setPassword(DigestUtils.sha256Hex(user.getPassword()));
+        return userRepository.save(user);
+    }
+
     public com.itmuch.lightsecurity.jwt.User getUserPrincipal() {
         return userOperator.getUser();
     }

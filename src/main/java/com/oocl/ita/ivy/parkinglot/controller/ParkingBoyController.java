@@ -19,7 +19,6 @@ public class ParkingBoyController implements BaseController<ParkingBoy, String> 
     @Autowired
     private ParkingBoyService parkingBoyService;
 
-
     @Override
     public ParkingBoy save(ParkingBoy parkingBoy) {
         return parkingBoyService.save(parkingBoy);
@@ -47,7 +46,7 @@ public class ParkingBoyController implements BaseController<ParkingBoy, String> 
 
     @Override
     public ParkingBoy update(ParkingBoy parkingBoy) {
-        return parkingBoyService.save(parkingBoy);
+        return parkingBoyService.update(parkingBoy);
     }
 
     @PutMapping("/{id}/parking-lots")
