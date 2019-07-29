@@ -4,10 +4,7 @@ import com.oocl.ita.ivy.parkinglot.entity.enums.OrderStatus;
 import lombok.Data;
 import org.hibernate.annotations.GenericGenerator;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.OneToOne;
+import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.util.Date;
 
@@ -31,10 +28,12 @@ public class Order {
 
     private Date endTime;
 
-    @OneToOne
+    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @JoinColumn(name = "parkingboy_id")
     private ParkingBoy parkingBoy;
 
-    @OneToOne
+    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @JoinColumn(name = "parkinglot_id")
     private ParkingLot parkingLot;
 
     private OrderStatus orderStatus;
