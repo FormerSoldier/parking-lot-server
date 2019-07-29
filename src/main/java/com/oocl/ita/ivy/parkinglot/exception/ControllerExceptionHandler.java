@@ -23,6 +23,7 @@ public class ControllerExceptionHandler {
 
     @ExceptionHandler(BusinessException.class)
     @ResponseBody
+    @ResponseStatus(value = HttpStatus.BAD_REQUEST)
     public ExceptionResponseEntity handleBusinessException(BusinessException e) {
         return ExceptionResponseEntity.convert(e);
     }
