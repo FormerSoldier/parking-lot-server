@@ -1,13 +1,10 @@
-SET FOREIGN_KEY_CHECKS=0;
-
--- ----------------------------
--- Table structure for `parking_boy`
--- ----------------------------
-CREATE TABLE `parking_boy` (
-  `id` varchar(255) NOT NULL,
-  `gender` int(11) DEFAULT NULL,
-  `join_time` datetime DEFAULT NULL,
-  `name` varchar(255) DEFAULT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
+create table if not exists parking_boy
+(
+    id        varchar(255) not null
+        primary key,
+    gender    int          not null,
+    join_time datetime     not null,
+    name      varchar(255) not null
+)
+    ENGINE = InnoDB
+    DEFAULT CHARSET = utf8;
