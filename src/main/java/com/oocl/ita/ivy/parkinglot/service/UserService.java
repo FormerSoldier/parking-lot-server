@@ -29,6 +29,7 @@ public class UserService implements BaseService<User, String>{
     @Autowired
     private UserOperator userOperator;
 
+
     public String login(User user) {
         return userRepository.findByUsername(user.getUsername())
                 .filter(savedUser -> DigestUtils.sha256Hex(user.getPassword()).equals(savedUser.getPassword()))
@@ -38,6 +39,12 @@ public class UserService implements BaseService<User, String>{
 
     public User register(User user) {
         user.setRoles(Role.ADMIN.getRole());
+        user.setPassword(DigestUtils.sha256Hex(user.getPassword()));
+        return userRepository.save(user);
+    }
+
+    public User register(User user, Role role){
+        user.setRoles(role.getRole());
         user.setPassword(DigestUtils.sha256Hex(user.getPassword()));
         return userRepository.save(user);
     }

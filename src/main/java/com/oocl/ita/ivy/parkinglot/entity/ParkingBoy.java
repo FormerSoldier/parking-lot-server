@@ -24,9 +24,9 @@ public class ParkingBoy {
     @JoinColumn(name="parking_lot_id")
     private List<ParkingLot> parkingLotList;
 
-//    @OneToOne
-//    @NotNull
-//    private User user;
+    @OneToOne
+    @NotNull
+    private User user;
 
     @NotNull
     private boolean free=true;

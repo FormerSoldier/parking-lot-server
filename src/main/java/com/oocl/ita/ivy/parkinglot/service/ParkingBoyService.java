@@ -2,7 +2,9 @@ package com.oocl.ita.ivy.parkinglot.service;
 
 import com.oocl.ita.ivy.parkinglot.entity.ParkingBoy;
 import com.oocl.ita.ivy.parkinglot.entity.ParkingLot;
+import com.oocl.ita.ivy.parkinglot.entity.User;
 import com.oocl.ita.ivy.parkinglot.entity.enums.BusinessExceptionType;
+import com.oocl.ita.ivy.parkinglot.entity.enums.Role;
 import com.oocl.ita.ivy.parkinglot.exception.BusinessException;
 import com.oocl.ita.ivy.parkinglot.repository.ParkingBoyRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,8 +22,13 @@ public class ParkingBoyService implements BaseService<ParkingBoy, String> {
     @Autowired
     private ParkingBoyRepository parkingBoyRepository;
 
+    @Autowired
+    private UserService userService;
+
     @Override
     public ParkingBoy save(ParkingBoy parkingBoy) {
+        User user=userService.register(parkingBoy.getUser(), Role.PARKINGBOY);
+        parkingBoy.setUser(user);
         return parkingBoyRepository.save(parkingBoy);
     }
 
@@ -56,4 +63,9 @@ public class ParkingBoyService implements BaseService<ParkingBoy, String> {
         return parkingBoyRepository.findById(id).orElseThrow(()->new BusinessException(BusinessExceptionType.RECODE_NOT_FOUNT)).getParkingLotList();
     }
 
+    public ParkingBoy update(ParkingBoy parkingBoy) {
+        ParkingBoy oldParkingBoy=parkingBoyRepository.findById(parkingBoy.getId()).orElseThrow(() ->new BusinessException(BusinessExceptionType.RECODE_NOT_FOUNT));
+        parkingBoy.setUser(oldParkingBoy.getUser());
+        return parkingBoyRepository.save(parkingBoy);
+    }
 }
