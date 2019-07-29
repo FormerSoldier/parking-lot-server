@@ -1,7 +1,8 @@
 package com.oocl.ita.ivy.parkinglot.entity.enums;
 
 public enum Role {
-    ADMIN("ADMIN");
+    ADMIN("ADMIN"),
+    CUSTOMER("CUSTOMER");
     private String role;
 
     Role(String role) {

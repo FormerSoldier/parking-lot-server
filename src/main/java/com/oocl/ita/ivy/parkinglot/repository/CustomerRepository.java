@@ -6,6 +6,8 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.util.Optional;
+
 @Repository
 public interface CustomerRepository extends JpaRepository<Customer, String> {
 
@@ -13,4 +15,8 @@ public interface CustomerRepository extends JpaRepository<Customer, String> {
             "    WHERE c.user_id = u.id" +
             "        AND username = :username",nativeQuery = true)
     Customer findByUsername(@Param("username") String username);
+
+    @Override
+    @Query(value="SELECT * FROM customer INNER JOIN user_master ON user_master.id = :id AND user_master.id = customer.user_id",nativeQuery = true)
+    Optional<Customer> findById(@Param("id") String id);
 }

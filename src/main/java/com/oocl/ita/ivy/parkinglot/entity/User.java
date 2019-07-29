@@ -101,4 +101,17 @@ public class User extends com.itmuch.lightsecurity.jwt.User {
     public void setDeleteFlag(boolean deleteFlag) {
         this.deleteFlag = deleteFlag;
     }
+
+
+    @Override
+    public String toString() {
+        return "User{" +
+                "id=" + id +
+                ", username='" + username + '\'' +
+                ", name='" + name + '\'' +
+                ", password='" + password + '\'' +
+                ", roles='" + roles + '\'' +
+                ", deleteFlag=" + deleteFlag +
+                '}';
+    }
 }

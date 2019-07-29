@@ -27,4 +27,17 @@ public class Customer {
     @OneToOne
     @JoinColumn(name = "user_id")
     private User user;
+
+
+    @Override
+    public String toString() {
+        return "Customer{" +
+                "id='" + id + '\'' +
+                ", phone='" + phone + '\'' +
+                ", point=" + point +
+                ", isVIP=" + isVIP +
+                ", times=" + times +
+                ", user=" + user +
+                '}';
+    }
 }
