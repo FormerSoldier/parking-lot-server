@@ -10,7 +10,7 @@ import java.util.Date;
 
 @Entity
 @Data
-public class Order {
+public class ParkingOrder {
 
     @Id
     @GeneratedValue(generator = "uuid")
@@ -19,6 +19,7 @@ public class Order {
 
     @NotNull
     @OneToOne
+    @JoinColumn(name = "customer_id")
     private Customer customer;
 
     @NotNull
@@ -28,11 +29,11 @@ public class Order {
 
     private Date endTime;
 
-    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @OneToOne
     @JoinColumn(name = "parkingboy_id")
     private ParkingBoy parkingBoy;
 
-    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @OneToOne
     @JoinColumn(name = "parkinglot_id")
     private ParkingLot parkingLot;
 
