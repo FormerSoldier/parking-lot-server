@@ -1,4 +1,4 @@
-create table if not exists parking_lot_dev.user_master
+create table if not exists user_master
 (
     id          int auto_increment
         primary key,
@@ -10,5 +10,6 @@ create table if not exists parking_lot_dev.user_master
     constraint UK_username
         unique (username)
 )
-    engine = InnoDB;
+    ENGINE = InnoDB
+    DEFAULT CHARSET = utf8;
 
