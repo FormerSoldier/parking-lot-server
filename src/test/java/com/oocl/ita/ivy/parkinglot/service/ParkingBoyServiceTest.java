@@ -80,7 +80,7 @@ public class ParkingBoyServiceTest {
     public void should_call_delete_method_when_delete_parking_boy_by_id() {
         ParkingBoy parkingBoy = generateParkingBoy();
 
-        parkingBoyService.delete(parkingBoy.getId());
+        parkingBoyService.deleteById(parkingBoy.getId());
         verify(parkingBoyRepository).deleteById(anyString());
     }
 }
