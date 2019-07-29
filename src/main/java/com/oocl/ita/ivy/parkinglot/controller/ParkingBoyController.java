@@ -1,6 +1,7 @@
 package com.oocl.ita.ivy.parkinglot.controller;
 
 import com.oocl.ita.ivy.parkinglot.entity.ParkingBoy;
+import com.oocl.ita.ivy.parkinglot.entity.ParkingLot;
 import com.oocl.ita.ivy.parkinglot.service.ParkingBoyService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
@@ -12,7 +13,7 @@ import java.time.Instant;
 import java.util.List;
 
 @RestController
-@RequestMapping("/parkingboys")
+@RequestMapping("/parking-boys")
 public class ParkingBoyController implements BaseController<ParkingBoy, String> {
 
     @Autowired
@@ -48,4 +49,16 @@ public class ParkingBoyController implements BaseController<ParkingBoy, String> 
     public ParkingBoy update(ParkingBoy parkingBoy) {
         return parkingBoyService.save(parkingBoy);
     }
+
+    @PutMapping("/{id}/parking-lots")
+    public ParkingBoy setParkingLots(@PathVariable String id, List<ParkingLot>parkingLots){
+        return parkingBoyService.setParkingLotsByID(id,parkingLots);
+    }
+
+    @GetMapping("/{id}/parking-lots")
+    public List<ParkingLot> getParkingLotsById(@PathVariable String id){
+        return parkingBoyService.getParkingLotsByID(id);
+    }
+
+
 }
