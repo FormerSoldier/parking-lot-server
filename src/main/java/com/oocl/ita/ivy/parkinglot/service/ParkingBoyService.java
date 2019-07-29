@@ -1,35 +1,46 @@
 package com.oocl.ita.ivy.parkinglot.service;
 
 import com.oocl.ita.ivy.parkinglot.entity.ParkingBoy;
+import com.oocl.ita.ivy.parkinglot.entity.enums.BusinessExceptionType;
+import com.oocl.ita.ivy.parkinglot.exception.BusinessException;
 import com.oocl.ita.ivy.parkinglot.repository.ParkingBoyRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
-public class ParkingBoyService {
+public class ParkingBoyService implements BaseService<ParkingBoy, String> {
 
     @Autowired
     private ParkingBoyRepository parkingBoyRepository;
 
-    public List<ParkingBoy> findAllParkingBoys() {
-        return parkingBoyRepository.findAll();
-    }
-
-    public ParkingBoy find(String id) throws Exception {
-        ParkingBoy parkingBoy = parkingBoyRepository.findById(id).orElse(null);
-        if (parkingBoy == null) {
-            throw new Exception("No such parking boy");
-        }
-        return parkingBoy;
-    }
-
+    @Override
     public ParkingBoy save(ParkingBoy parkingBoy) {
         return parkingBoyRepository.save(parkingBoy);
     }
 
-    public void delete(String id) {
-        parkingBoyRepository.deleteById(id);
+    @Override
+    public List<ParkingBoy> findAll() {
+        return parkingBoyRepository.findAll();
     }
+
+    @Override
+    public void deleteById(String s) {
+        parkingBoyRepository.deleteById(s);
+    }
+
+    @Override
+    public ParkingBoy findById(String s) {
+        return parkingBoyRepository.findById(s).orElseThrow(() -> new BusinessException(BusinessExceptionType.RECODE_NOT_FOUNT));
+    }
+
+    @Override
+    public Page<ParkingBoy> findAll(Pageable pageable) {
+        return parkingBoyRepository.findAll(pageable);
+    }
+
 }

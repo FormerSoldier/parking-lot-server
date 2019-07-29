@@ -11,6 +11,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.validation.constraints.NotNull;
 import java.time.Instant;
+import java.util.Date;
 
 @Entity
 @Data
@@ -24,10 +25,12 @@ public class ParkingBoy {
     @NotNull
     private String name;
 
+    @NotNull
     private Gender gender;
 
     @Column
     @CreatedDate
-    private Instant joinTime;
+    @NotNull
+    private Date joinTime = new Date();
 
 }
