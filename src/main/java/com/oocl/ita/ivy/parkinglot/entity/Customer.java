@@ -24,7 +24,6 @@ public class Customer {
 
     private int times;
 
-    @NotNull
     @OneToOne
     @JoinColumn(name = "user_id")
     private User user;

@@ -87,7 +87,7 @@ public class CustomerController implements BaseController<Customer,String> {
 
 
     @GetMapping("/me")
-    public Customer getCustomerByToken(String token){
-        return null;
+    public Customer getCurrentCustomer(){
+        return customerService.findBycurrentCustomer();
     }
 }

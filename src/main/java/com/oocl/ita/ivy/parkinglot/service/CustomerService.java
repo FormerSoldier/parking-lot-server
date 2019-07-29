@@ -84,4 +84,12 @@ public class CustomerService implements BaseService<Customer,String> {
         userService.updateUserDeleteFlagById(id);
     }
 
+    public Customer findByUsername(String username) {
+        return customerRepository.findByUsername(username);
+    }
+
+    public Customer findBycurrentCustomer(){
+        return findByUsername(userOperator.getUser().getUsername());
+    }
+
 }
