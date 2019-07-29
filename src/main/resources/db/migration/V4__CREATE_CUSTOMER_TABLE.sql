@@ -7,4 +7,4 @@ create table if not exists customer(
 `user_id`  varchar(255) NOT NULL ,
 PRIMARY KEY (`id`),
 CONSTRAINT `fk_user_id` FOREIGN KEY (`user_id`) REFERENCES `user_master` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE = InnoDB DEFAULT CHARSET = utf8;
+)ENGINE = InnoDB DEFAULT CHARSET = utf8;

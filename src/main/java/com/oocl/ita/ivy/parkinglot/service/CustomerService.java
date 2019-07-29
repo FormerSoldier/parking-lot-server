@@ -34,6 +34,26 @@ public class CustomerService implements BaseService<Customer,String> {
         return customerRepository.save(customer);
     }
 
+    public Customer update(Customer customer) {
+        User user = null;
+        if(customer == null || customer.getUser() == null){
+            return customer;
+        }
+        user = userService.findById(customer.getUser().getId());
+
+        Customer return_customer = customerRepository.findById(customer.getId()).orElse(null);
+        if(return_customer == null)
+            return null;
+        return_customer.setUser(user);
+
+        return_customer.setVIP(customer.isVIP());
+        return_customer.setTimes(customer.getTimes());
+        return_customer.setPoint(customer.getPoint());
+
+        return_customer.setUser(user);
+        return customerRepository.save(return_customer);
+    }
+
 
 
     @Override
@@ -54,5 +74,9 @@ public class CustomerService implements BaseService<Customer,String> {
     @Override
     public Page<Customer> findAll(Pageable pageable) {
         return customerRepository.findAll(pageable);
+    }
+
+    public void updateUserDeleteFlag(Integer id){
+        userService.updateUserDeleteFlagById(id);
     }
 }

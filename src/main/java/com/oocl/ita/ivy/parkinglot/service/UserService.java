@@ -81,8 +81,17 @@ public class UserService implements BaseService<User, String>{
         return null;
     }
 
+    public User findById(Integer id) {
+        return userRepository.findById(id).orElseThrow(() -> new BusinessException(BusinessExceptionType.RECODE_NOT_FOUNT));
+    }
+
     @Override
     public Page<User> findAll(Pageable pageable) {
         return null;
+    }
+
+    public void updateUserDeleteFlagById(Integer id){
+        System.out.println(id);
+        //userRepository.updateUserDeleteFlagById(id);
     }
 }
