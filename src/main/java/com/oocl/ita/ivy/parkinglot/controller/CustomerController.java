@@ -47,6 +47,7 @@ public class CustomerController implements BaseController<Customer,String> {
         return customerService.findAll();
     }
 
+    @GetMapping(params = {"page"})
     @Override
     public Page<Customer> findAll(Pageable pageable) {
         return customerService.findAll(pageable);
