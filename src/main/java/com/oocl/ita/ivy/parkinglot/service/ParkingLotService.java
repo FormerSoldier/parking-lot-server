@@ -1,39 +1,44 @@
 package com.oocl.ita.ivy.parkinglot.service;
 
 import com.oocl.ita.ivy.parkinglot.entity.ParkingLot;
+import com.oocl.ita.ivy.parkinglot.entity.enums.BusinessExceptionType;
+import com.oocl.ita.ivy.parkinglot.exception.BusinessException;
 import com.oocl.ita.ivy.parkinglot.repository.ParkingLotRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Service
-public class ParkingLotService {
+public class ParkingLotService implements BaseService<ParkingLot, String> {
     @Autowired
     private ParkingLotRepository parkingLotRepository;
 
-    public List<ParkingLot> getAllParkingLot() {
+
+    @Override
+    public ParkingLot save(ParkingLot parkingLot) {
+        return parkingLotRepository.save(parkingLot);
+    }
+
+    @Override
+    public List<ParkingLot> findAll() {
         return parkingLotRepository.findAll();
     }
 
-    public ParkingLot addParkingLot(ParkingLot parkingLot) {
-        return parkingLotRepository.save(parkingLot);
+    @Override
+    public void deleteById(String s) {
+        parkingLotRepository.deleteById(s);
     }
 
-    public ParkingLot modifyParkingLot(ParkingLot parkingLot) {
-        return parkingLotRepository.save(parkingLot);
+    @Override
+    public ParkingLot findById(String s) {
+        return parkingLotRepository.findById(s).orElseThrow(() -> new BusinessException(BusinessExceptionType.RECODE_NOT_FOUNT));
     }
 
-    public ParkingLot getParkingLotById(String id) {
-        return parkingLotRepository.findById(id).orElseThrow(() -> new RuntimeException("Record not found"));
+    @Override
+    public Page<ParkingLot> findAll(Pageable pageable) {
+        return parkingLotRepository.findAll(pageable);
     }
-
-    public void deleteParkingLotById(String id) {
-        parkingLotRepository.deleteById(id);
-    }
-
-
 }

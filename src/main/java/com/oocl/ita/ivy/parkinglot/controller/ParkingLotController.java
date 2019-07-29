@@ -3,31 +3,47 @@ package com.oocl.ita.ivy.parkinglot.controller;
 import com.oocl.ita.ivy.parkinglot.entity.ParkingLot;
 import com.oocl.ita.ivy.parkinglot.service.ParkingLotService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.Serializable;
 import java.util.List;
 
 @RestController
 @RequestMapping("/parking-lots")
-public class ParkingLotController {
+public class ParkingLotController implements BaseController<ParkingLot, String >{
     @Autowired
     private ParkingLotService parkingLotService;
 
-    @GetMapping
-    public List<ParkingLot> getAllParkingLot() {
-        return parkingLotService.getAllParkingLot();
+
+    @Override
+    public ParkingLot save(ParkingLot parkingLot) {
+        return parkingLotService.save(parkingLot);
     }
 
-    @PostMapping
-    public ParkingLot addParkingLot(@RequestBody ParkingLot parkingLot) {
-        return parkingLotService.addParkingLot(parkingLot);
+    @Override
+    public List<ParkingLot> findAll() {
+        return parkingLotService.findAll();
     }
-    @PutMapping
-    public ParkingLot modifyParkingLot(@RequestBody ParkingLot parkingLot){
-        return parkingLotService.modifyParkingLot(parkingLot);
+
+    @Override
+    public Page<ParkingLot> findAll(Pageable pageable) {
+        return parkingLotService.findAll(pageable);
     }
-    @DeleteMapping("/{id}")
-    public void deleteParkingLotById(@PathVariable String id){
-        parkingLotService.deleteParkingLotById(id);
+
+    @Override
+    public ParkingLot findById(String s) throws Exception {
+        return parkingLotService.findById(s);
+    }
+
+    @Override
+    public void deleteById(String s) {
+        parkingLotService.deleteById(s);
+    }
+
+    @Override
+    public ParkingLot update(ParkingLot parkingLot) {
+        return parkingLotService.save(parkingLot);
     }
 }

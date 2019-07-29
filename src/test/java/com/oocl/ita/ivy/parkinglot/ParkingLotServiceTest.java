@@ -48,7 +48,7 @@ public class ParkingLotServiceTest {
     public void should_return_parkinglot_when_call_add_parkinglot(){
         ParkingLot parkingLot = generateParkingLot();
         when(parkingLotRepository.save(any())).thenReturn(parkingLot);
-         ParkingLot parkingLot1 = parkingLotService.addParkingLot(parkingLot);
+         ParkingLot parkingLot1 = parkingLotService.save(parkingLot);
 
          assertSame(parkingLot.getId(),parkingLot1.getId());
          verify(parkingLotRepository).save(any());
@@ -56,7 +56,7 @@ public class ParkingLotServiceTest {
     @Test
     public void should_return_all_parkinglots_when_call_get_all_parkinglot(){
         when(parkingLotRepository.findAll()).thenReturn(new ArrayList<ParkingLot>());
-        parkingLotService.getAllParkingLot();
+        parkingLotService.findAll();
         verify(parkingLotRepository).findAll();
     }
     @Test
@@ -64,10 +64,15 @@ public class ParkingLotServiceTest {
         ParkingLot parkingLot = generateParkingLot();
         parkingLot.setName("1号停车场");
         when(parkingLotRepository.save(any())).thenReturn(parkingLot);
-        ParkingLot parkingLot1 = parkingLotService.modifyParkingLot(parkingLot);
+        ParkingLot parkingLot1 = parkingLotService.save(parkingLot);
         assertSame(parkingLot.getId(),parkingLot1.getId());
         verify(parkingLotRepository).save(any());
     }
-
+    @Test
+    public void should_delete_parkinglot_successfully_when_call_delete_parkinglot_by_id(){
+        ParkingLot parkingLot = generateParkingLot();
+       // when(parkingLotRepository.findById(any())).thenReturn(parkingLot);
+        //when(parkingLotRepository.deleteById(parkingLot.getId())).thenReturn();
+    }
 
 }
