@@ -49,7 +49,7 @@ public class ParkingBoyService implements BaseService<ParkingBoy, String> {
     public ParkingBoy setParkingLotsByID(String id, List<ParkingLot> parkingLots) {
         ParkingBoy parkingBoy=parkingBoyRepository.findById(id).orElseThrow(() ->new BusinessException(BusinessExceptionType.RECODE_NOT_FOUNT));
         parkingBoy.setParkingLotList(parkingLots);
-        return parkingBoy;
+        return parkingBoyRepository.saveAndFlush(parkingBoy);
     }
 
     public List<ParkingLot> getParkingLotsByID(String id) {

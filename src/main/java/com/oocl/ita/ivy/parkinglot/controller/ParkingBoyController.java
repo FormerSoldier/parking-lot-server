@@ -51,7 +51,7 @@ public class ParkingBoyController implements BaseController<ParkingBoy, String> 
     }
 
     @PutMapping("/{id}/parking-lots")
-    public ParkingBoy setParkingLots(@PathVariable String id, List<ParkingLot>parkingLots){
+    public ParkingBoy setParkingLots(@PathVariable String id, @RequestBody  List<ParkingLot>parkingLots){
         return parkingBoyService.setParkingLotsByID(id,parkingLots);
     }
 
