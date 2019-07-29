@@ -14,7 +14,7 @@ public interface BaseService<T, ID extends Serializable> {
 
     void deleteById(ID id);
 
-    Optional<T> findById(ID id);
+    T findById(ID id);
 
     Page<T> findAll(Pageable pageable);
 }
