@@ -9,7 +9,6 @@ import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.test.context.junit4.SpringRunner;
-import org.springframework.test.web.servlet.ResultActions;
 
 import java.util.ArrayList;
 
@@ -75,5 +74,13 @@ public class ParkingBoyServiceTest {
     public void should_return_parking_boy_when_update_parking_boy_by_id() {
         ParkingBoy parkingBoy = generateParkingBoy();
         when(parkingBoyRepository.save(any())).thenReturn(parkingBoy);
+    }
+
+    @Test
+    public void should_call_delete_method_when_delete_parking_boy_by_id() {
+        ParkingBoy parkingBoy = generateParkingBoy();
+
+        parkingBoyService.delete(parkingBoy.getId());
+        verify(parkingBoyRepository).deleteById(anyString());
     }
 }
