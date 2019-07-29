@@ -3,10 +3,7 @@ package com.oocl.ita.ivy.parkinglot.entity;
 import lombok.Data;
 import org.hibernate.annotations.GenericGenerator;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.OneToOne;
+import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 
 @Entity
@@ -29,5 +26,19 @@ public class Customer {
 
     @NotNull
     @OneToOne
+    @JoinColumn(name = "user_id")
     private User user;
+
+
+    @Override
+    public String toString() {
+        return "Customer{" +
+                "id='" + id + '\'' +
+                ", phone='" + phone + '\'' +
+                ", point=" + point +
+                ", isVIP=" + isVIP +
+                ", times=" + times +
+                ", user=" + user +
+                '}';
+    }
 }
