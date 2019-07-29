@@ -57,7 +57,7 @@ public class ParkingBoyServiceTest {
     @Test
     public void should_return_all_parking_boy_when_fetch_all() {
         when(parkingBoyRepository.findAll()).thenReturn(new ArrayList<ParkingBoy>());
-        parkingBoyService.findAllParkingBoys();
+        parkingBoyService.findAll();
         verify(parkingBoyRepository).findAll();
     }
 
@@ -66,7 +66,7 @@ public class ParkingBoyServiceTest {
         ParkingBoy parkingBoy = generateParkingBoy();
         when(parkingBoyRepository.findById(anyString())).thenReturn(java.util.Optional.of(new ParkingBoy()));
 
-        parkingBoyService.find(parkingBoy.getId());
+        parkingBoyService.findById(parkingBoy.getId());
         verify(parkingBoyRepository).findById(anyString());
     }
 
