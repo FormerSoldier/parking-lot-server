@@ -49,7 +49,7 @@ public class CustomerController implements BaseController<Customer,String> {
 
     @Override
     public Page<Customer> findAll(Pageable pageable) {
-        return null;
+        return customerService.findAll(pageable);
     }
 
     @GetMapping("/{id}")
