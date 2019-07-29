@@ -12,8 +12,8 @@ public class ParkingOrderController {
     @Autowired
     private ParkingOrderService orderService;
 
-    @PostMapping(path = "/{customerUsername}")
-    public ParkingOrder save(@RequestBody ParkingOrder order, @PathVariable String customerUsername) {
-        return orderService.save(order, customerUsername);
+    @PostMapping(path = "/{customerUsername}/car-no/{carNo}")
+    public ParkingOrder save(@PathVariable String customerUsername, @PathVariable String carNo) {
+        return orderService.save(customerUsername, carNo);
     }
 }

@@ -19,14 +19,16 @@ public class ParkingOrderService {
     @Autowired
     private CustomerRepository customerRepository;
 
-    public ParkingOrder save(ParkingOrder order, String customerUsername) {
+    public ParkingOrder save(String customerUsername, String carNo) {
         Customer customer = customerRepository.findByUsername(customerUsername);
         if (customer == null) {
             new BusinessException(BusinessExceptionType.RECODE_NOT_FOUNT);
         }
-        order.setCustomer(customer);
-        order.setOrderStatus(OrderStatus.PROGRESSING);
-        return orderRepository.save(order);
+        ParkingOrder parkingOrder = new ParkingOrder();
+        parkingOrder.setCarNo(carNo);
+        parkingOrder.setCustomer(customer);
+        parkingOrder.setOrderStatus(OrderStatus.PROGRESSING);
+        return orderRepository.save(parkingOrder);
     }
 
 }
