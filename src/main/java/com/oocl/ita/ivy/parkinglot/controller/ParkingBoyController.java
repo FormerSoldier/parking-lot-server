@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.Instant;
 import java.util.List;
 
 @RestController
@@ -27,6 +28,7 @@ public class ParkingBoyController {
 
     @PostMapping
     public ParkingBoy add(@RequestBody ParkingBoy parkingBoy) {
+        parkingBoy.setJoinTime(Instant.now());
         return parkingBoyService.save(parkingBoy);
     }
 

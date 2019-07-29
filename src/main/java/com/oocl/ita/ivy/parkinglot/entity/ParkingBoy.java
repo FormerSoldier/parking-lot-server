@@ -21,7 +21,7 @@ public class ParkingBoy {
 
     private Gender gender;
 
-    private Instant joinTime = Instant.now();
+    private Instant joinTime;
 
     public String getId() {
         return id;
