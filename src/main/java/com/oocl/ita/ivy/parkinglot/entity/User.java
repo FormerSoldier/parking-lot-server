@@ -16,8 +16,8 @@ import java.util.List;
 @Entity
 @DynamicInsert
 @DynamicUpdate
-@SQLDelete(sql = "UPDATE USER SET DELETE_FLAG = TRUE WHERE ID = ?")
-@Where(clause = "DELETE_FLAG = " + false)
+//@SQLDelete(sql = "UPDATE USER SET DELETE_FLAG = TRUE WHERE ID = ?")
+//@Where(clause = "DELETE_FLAG = " + false)
 @Table(name = "USER_MASTER")
 public class User extends com.itmuch.lightsecurity.jwt.User {
 

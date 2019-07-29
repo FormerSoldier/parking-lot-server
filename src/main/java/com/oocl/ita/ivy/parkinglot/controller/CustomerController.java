@@ -62,20 +62,32 @@ public class CustomerController implements BaseController<Customer,String> {
         return customer;
     }
 
-    @DeleteMapping("/{id}")
     @Override
-    public void deleteById(@PathVariable String id) {
-        return ;
-       /* Customer customer = customerService.findById(id);
-        if(customer == null )
-            return ;
-        System.out.println(customer.getUser().getId());
-        customerService.updateUserDeleteFlag(customer.getUser().getId());*/
+    public void deleteById(String s) {
+
     }
 
+    /*
+        @DeleteMapping("/{id}")
+        @Override
+        public void deleteById(@PathVariable String id) {
+            return ;
+           Customer customer = customerService.findById(id);
+            if(customer == null )
+                return ;
+            System.out.println(customer.getUser().getId());
+            customerService.updateUserDeleteFlag(customer.getUser().getId());
+        }
+    */
     @PutMapping
     @Override
     public Customer update(@RequestBody Customer customer) {
         return customerService.save(customer);
+    }
+
+
+    @GetMapping("/me")
+    public Customer getCurrentCustomer(){
+        return customerService.findBycurrentCustomer();
     }
 }

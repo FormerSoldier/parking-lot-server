@@ -1,5 +1,6 @@
 package com.oocl.ita.ivy.parkinglot.service;
 
+import com.itmuch.lightsecurity.jwt.UserOperator;
 import com.oocl.ita.ivy.parkinglot.entity.Customer;
 import com.oocl.ita.ivy.parkinglot.entity.User;
 import com.oocl.ita.ivy.parkinglot.entity.enums.BusinessExceptionType;
@@ -21,6 +22,9 @@ public class CustomerService implements BaseService<Customer,String> {
 
     @Autowired
     UserService userService;
+
+    @Autowired
+    UserOperator userOperator;
 
     @Override
     public Customer save(Customer customer) {
@@ -83,4 +87,9 @@ public class CustomerService implements BaseService<Customer,String> {
     public Customer findByUsername(String username) {
         return customerRepository.findByUsername(username);
     }
+
+    public Customer findBycurrentCustomer(){
+        return findByUsername(userOperator.getUser().getUsername());
+    }
+
 }
