@@ -2,7 +2,9 @@ package com.oocl.ita.ivy.parkinglot.entity;
 
 import com.oocl.ita.ivy.parkinglot.entity.enums.Gender;
 import org.hibernate.annotations.GenericGenerator;
+import org.springframework.data.annotation.CreatedDate;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
@@ -21,6 +23,8 @@ public class ParkingBoy {
 
     private Gender gender;
 
+    @Column
+    @CreatedDate
     private Instant joinTime;
 
     public String getId() {

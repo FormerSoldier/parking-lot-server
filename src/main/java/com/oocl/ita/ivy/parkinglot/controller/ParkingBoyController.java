@@ -28,7 +28,6 @@ public class ParkingBoyController {
 
     @PostMapping
     public ParkingBoy add(@RequestBody ParkingBoy parkingBoy) {
-        parkingBoy.setJoinTime(Instant.now());
         return parkingBoyService.save(parkingBoy);
     }
 
