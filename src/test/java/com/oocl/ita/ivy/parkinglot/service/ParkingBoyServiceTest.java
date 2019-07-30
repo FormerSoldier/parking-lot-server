@@ -42,6 +42,9 @@ public class ParkingBoyServiceTest {
     @InjectMocks
     private ParkingBoyService parkingBoyService;
 
+    @Mock
+    private UserService userService;
+
     @Before
     public void setUp(){
         MockitoAnnotations.initMocks(this);
@@ -55,47 +58,40 @@ public class ParkingBoyServiceTest {
         return parkingBoy;
     }
 
-//    @Test
-//    public void should_return_parking_boy_when_save_parking_boy() {
-//        ParkingBoy parkingBoy =  new ParkingBoy();
-//        parkingBoy.setId("1");
-//        parkingBoy.setGender(FEMALE);
-//        parkingBoy.setName("123");
-//        when(parkingBoyRepository.save(any())).thenReturn(parkingBoy);
-//
-//        ParkingBoy savePkb = parkingBoyService.save(parkingBoy);
-//
-//        assertEquals(parkingBoy.getId(), savePkb.getId());
-//        verify(parkingBoyRepository).save(any());
-//    }
+    @Test
+    public void should_return_parking_boy_when_save_parking_boy() {
+        ParkingBoy parkingBoy =  new ParkingBoy();
+        parkingBoy.setId("1");
+        parkingBoy.setGender(FEMALE);
+        parkingBoy.setName("123");
+        when(parkingBoyRepository.save(any())).thenReturn(parkingBoy);
 
-//    @Test
-//    public void should_return_all_parking_boy_when_fetch_all() {
-//        when(parkingBoyRepository.findAll()).thenReturn(new ArrayList<ParkingBoy>());
-//        parkingBoyService.findAll();
-//        verify(parkingBoyRepository).findAll();
-//    }
+        ParkingBoy savePkb = parkingBoyService.save(parkingBoy);
 
-//    @Test
-//    public void should_return_parking_boy_when_fetch_parking_boy_by_id() throws Exception {
-//        ParkingBoy parkingBoy = generateParkingBoy();
-//        when(parkingBoyRepository.findById(anyString())).thenReturn(java.util.Optional.of(new ParkingBoy()));
-//
-//        parkingBoyService.findById(parkingBoy.getId());
-//        verify(parkingBoyRepository).findById(anyString());
-//    }
+        assertEquals(parkingBoy.getId(), savePkb.getId());
+        verify(parkingBoyRepository).save(any());
+    }
 
-//    @Test
-//    public void should_return_parking_boy_when_update_parking_boy_by_id() {
-//        ParkingBoy parkingBoy = generateParkingBoy();
-//        when(parkingBoyRepository.save(any())).thenReturn(parkingBoy);
-//    }
+    @Test
+    public void should_return_all_parking_boy_when_fetch_all() {
+        when(parkingBoyRepository.findAll()).thenReturn(new ArrayList<ParkingBoy>());
+        parkingBoyService.findAll();
+        verify(parkingBoyRepository).findAll();
+    }
 
-//    @Test
-//    public void should_call_delete_method_when_delete_parking_boy_by_id() {
-//        ParkingBoy parkingBoy = generateParkingBoy();
-//
-//        parkingBoyService.deleteById(parkingBoy.getId());
-//        verify(parkingBoyRepository).deleteById(anyString());
-//    }
+    @Test
+    public void should_return_parking_boy_when_fetch_parking_boy_by_id() throws Exception {
+        ParkingBoy parkingBoy = generateParkingBoy();
+        when(parkingBoyRepository.findById(anyString())).thenReturn(java.util.Optional.of(new ParkingBoy()));
+
+        parkingBoyService.findById(parkingBoy.getId());
+        verify(parkingBoyRepository).findById(anyString());
+    }
+
+    @Test
+    public void should_return_parking_boy_when_update_parking_boy_by_id() {
+        ParkingBoy parkingBoy = generateParkingBoy();
+        when(parkingBoyRepository.save(any())).thenReturn(parkingBoy);
+    }
+
 }
