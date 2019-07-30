@@ -19,7 +19,7 @@ import java.util.Optional;
 
 
 @Service
-public class gitUserService implements BaseService<User, String>{
+public class UserService implements BaseService<User, String>{
 
     @Autowired
     private JwtOperator jwtOperator;
