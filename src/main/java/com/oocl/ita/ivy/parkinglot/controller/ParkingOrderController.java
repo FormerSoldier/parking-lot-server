@@ -1,6 +1,5 @@
 package com.oocl.ita.ivy.parkinglot.controller;
 
-import com.oocl.ita.ivy.parkinglot.entity.ParkingBoyDTO;
 import com.oocl.ita.ivy.parkinglot.entity.ParkingOrder;
 import com.oocl.ita.ivy.parkinglot.service.ParkingOrderService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,7 +14,13 @@ public class ParkingOrderController {
 
     @PostMapping(path = "/{customerUsername}/car-no/{carNo}")
     public ParkingOrder save(@PathVariable String customerUsername, @PathVariable String carNo) {
-        return orderService.CustomerPark(customerUsername, carNo);
+        return orderService.customerPark(customerUsername, carNo);
     }
 
+    @PostMapping("/fetch")
+    public ParkingOrder fetch(@RequestBody String fetchId) throws Exception {
+
+        System.out.println(fetchId);
+        return orderService.customerFetch(fetchId);
+    }
 }

@@ -1,7 +1,6 @@
 package com.oocl.ita.ivy.parkinglot.repository;
 
 import com.oocl.ita.ivy.parkinglot.entity.ParkingBoy;
-import com.oocl.ita.ivy.parkinglot.entity.ParkingOrder;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -9,6 +8,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
 import java.util.Optional;
 
 
@@ -32,5 +32,13 @@ public interface ParkingBoyRepository extends JpaRepository<ParkingBoy, String> 
 
     ParkingBoy findParkingBoyByUserId(Integer id);
 
+
+    @Query(value = "SELECT *  FROM (SELECT * FROM parking_boy_parking_lot_list AS pbpll" +
+            "    WHERE parking_lot_list_id = :id" +
+            ") AS parking_boy_table" +
+            "    INNER JOIN parking_boy" +
+            "    ON parking_boy_table.parking_boy_id = parking_boy.id" +
+            "    WHERE status = :status", nativeQuery = true)
+    List<ParkingBoy> getParkingBoyByParkingLot(@Param("id") String id, @Param("status") String status);
 
 }
