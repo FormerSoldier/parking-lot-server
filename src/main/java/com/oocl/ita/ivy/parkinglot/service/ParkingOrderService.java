@@ -2,6 +2,7 @@ package com.oocl.ita.ivy.parkinglot.service;
 
 import com.oocl.ita.ivy.parkinglot.entity.Customer;
 
+import com.oocl.ita.ivy.parkinglot.entity.ParkingBoy;
 import com.oocl.ita.ivy.parkinglot.entity.ParkingBoyDTO;
 import com.oocl.ita.ivy.parkinglot.entity.ParkingOrder;
 import com.oocl.ita.ivy.parkinglot.entity.enums.BusinessExceptionType;
@@ -19,6 +20,9 @@ public class ParkingOrderService {
     private ParkingOrderRepository orderRepository;
     @Autowired
     private CustomerRepository customerRepository;
+    @Autowired
+    private ParkingBoyService parkingBoyService;
+
 
     /*public ParkingOrder save(String customerUsername, String carNo) {
         Customer customer = customerRepository.findByUsername(customerUsername);
@@ -32,12 +36,16 @@ public class ParkingOrderService {
         return orderRepository.save(parkingOrder);
     }*/
 
-    public ParkingOrder save(String customerUsername, String carNo) {
+    /*public ParkingOrder save(String customerUsername, String carNo) {
         /*
         * 1.先把订单分配给有停车空位，并且是open的parkingboy
         * 2.如果没有open的，就把订单给stop的parkingboy
-        * */
-    }
+        * 3.没有就返回
+        *
+        ParkingBoy parkingBoy = parkingBoyService
+
+
+    }*/
 
 
 
