@@ -145,7 +145,7 @@ public class ParkingOrderService {
                 parkingBoyVo = new ParkingBoyVo();
 
                 parkingBoyVo.setOrderId(parkingOrder.getId());
-                parkingBoyVo.setUsername(user.getUsername());
+                parkingBoyVo.setUsername(user.getName());
                 parkingBoyVo.setPhone(customer.getPhone());
                 parkingBoyVo.setCarNo(parkingOrder.getCarNo());
                 parkingBoyVo.setPrice(parkingOrder.getPrice());
@@ -179,7 +179,7 @@ public class ParkingOrderService {
                 parkingBoyVo = new ParkingBoyVo();
 
                 parkingBoyVo.setOrderId(parkingOrder.getId());
-                parkingBoyVo.setUsername(user.getUsername());
+                parkingBoyVo.setUsername(user.getName());
                 parkingBoyVo.setPhone(customer.getPhone());
                 parkingBoyVo.setCarNo(parkingOrder.getCarNo());
                 parkingBoyVo.setPrice(parkingOrder.getPrice());
