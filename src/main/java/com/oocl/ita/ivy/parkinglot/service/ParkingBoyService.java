@@ -39,7 +39,9 @@ public class ParkingBoyService implements BaseService<ParkingBoy, String> {
 
     @Override
     public void deleteById(String s) {
-        parkingBoyRepository.deleteById(s);
+        ParkingBoy parkingBoy=parkingBoyRepository.findById(s).orElseThrow(() -> new BusinessException(BusinessExceptionType.RECODE_NOT_FOUNT));
+        parkingBoy.getUser().setDeleteFlag(true);
+        parkingBoyRepository.save(parkingBoy);
     }
 
     @Override

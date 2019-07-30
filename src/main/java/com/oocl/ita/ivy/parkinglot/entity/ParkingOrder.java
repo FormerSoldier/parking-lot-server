@@ -18,7 +18,7 @@ public class ParkingOrder {
     private String id;
 
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private int count;
+    private int number;
 
 
     @NotNull

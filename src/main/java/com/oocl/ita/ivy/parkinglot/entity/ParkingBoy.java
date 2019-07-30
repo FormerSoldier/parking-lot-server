@@ -26,6 +26,7 @@ public class ParkingBoy {
 
     @OneToOne
     @NotNull
+    @JoinColumn(name="user_id")
     private User user;
 
     @NotNull
@@ -36,6 +37,11 @@ public class ParkingBoy {
 
     @NotNull
     private Gender gender;
+
+    private int orderNumInOpen;
+
+    private int orderNumInClose;
+
 
     @Column
     @CreatedDate

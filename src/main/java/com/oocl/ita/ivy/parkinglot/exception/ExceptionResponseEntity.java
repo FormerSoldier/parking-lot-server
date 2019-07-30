@@ -11,7 +11,7 @@ import java.util.Date;
 @Getter
 @Setter
 @NoArgsConstructor
-public class ExceptionResponseEntity {
+    public class ExceptionResponseEntity {
     private Date timestamp;
     private HttpStatus status;
     private String error;
