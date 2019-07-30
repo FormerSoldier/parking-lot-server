@@ -52,14 +52,14 @@ public class ParkingOrderService {
         if(parkingBoy == null)
             return null;
         parkingOrder.setOrderStatus(OrderStatus.PARK);
-        parkingOrder.setParkingBoy(parkingBoy);
-        parkingOrder.setParkingLot(parkingBoy.getParkingLotList().get(0));
         parkingOrder.setStartTime(new Date());
+        orderRepository.save(parkingOrder);
+        System.out.println("parkingboy的id为"+parkingBoy.getId());
+        System.out.println("parkinglot的id为"+parkingBoy.getParkingLotList().get(0).getId());
+
+        orderRepository.updateOrderParkingLotIdAndParkingBoyId(parkingBoy.getId(), parkingBoy.getParkingLotList().get(0).getId(),parkingOrder.getId());
 
         return orderRepository.save(parkingOrder);
     }
-
-
-
 
 }

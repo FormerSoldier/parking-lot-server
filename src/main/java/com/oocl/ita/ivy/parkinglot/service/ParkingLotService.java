@@ -41,4 +41,9 @@ public class ParkingLotService implements BaseService<ParkingLot, String> {
     public Page<ParkingLot> findAll(Pageable pageable) {
         return parkingLotRepository.findAll(pageable);
     }
+
+    public ParkingLot getValidParkingLot(){
+        return parkingLotRepository.getValidParkingLot();
+    }
+
 }

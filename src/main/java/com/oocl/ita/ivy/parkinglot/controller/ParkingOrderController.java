@@ -18,10 +18,4 @@ public class ParkingOrderController {
         return orderService.save(customerUsername, carNo);
     }
 
-
-    @PostMapping("/park")
-    public ParkingOrder park(@RequestBody ParkingOrder parkingOrder){
-        return orderService.CustomerPark(parkingOrder);
-    }
-
 }
