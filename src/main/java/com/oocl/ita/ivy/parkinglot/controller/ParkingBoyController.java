@@ -66,5 +66,9 @@ public class ParkingBoyController implements BaseController<ParkingBoy, String> 
         return parkingBoyService.getParkingLotsByID(id);
     }
 
+    @GetMapping("/me")
+    public ParkingBoy getCurrentParkingBoy(){
+        return parkingBoyService.getCurrentParkingBoy();
+    }
 
 }

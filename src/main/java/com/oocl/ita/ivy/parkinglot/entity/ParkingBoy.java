@@ -1,13 +1,13 @@
 package com.oocl.ita.ivy.parkinglot.entity;
 
 import com.oocl.ita.ivy.parkinglot.entity.enums.Gender;
+import com.oocl.ita.ivy.parkinglot.entity.enums.ParkingBoyStatus;
 import lombok.Data;
 import org.hibernate.annotations.GenericGenerator;
 import org.springframework.data.annotation.CreatedDate;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
-import java.time.Instant;
 import java.util.Date;
 import java.util.List;
 
@@ -30,7 +30,8 @@ public class ParkingBoy {
     private User user;
 
     @NotNull
-    private String status;
+    @Enumerated(EnumType.STRING)
+    private ParkingBoyStatus status = ParkingBoyStatus.BUSY;
 
     @NotNull
     private String name;
