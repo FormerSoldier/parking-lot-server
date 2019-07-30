@@ -19,6 +19,8 @@ import java.util.List;
 public class ParkingOrderService {
 
     @Autowired
+    private ParkingLotService parkingLotService;
+    @Autowired
     private ParkingOrderRepository orderRepository;
     @Autowired
     private CustomerRepository customerRepository;
@@ -41,7 +43,9 @@ public class ParkingOrderService {
         return orderRepository.save(parkingOrder);
     }
 
-    public ParkingOrder CustomerPark(ParkingOrder parkingOrder) {
+    public ParkingOrder customerPark(String customerUsername, String carNo) {
+
+        ParkingOrder parkingOrder = save(customerUsername,carNo);
         /*
         * 1.先把订单分配给有停车空位，并且是open的parkingboy
         * 2.如果没有open的，就把订单给stop的parkingboy
@@ -52,15 +56,37 @@ public class ParkingOrderService {
             parkingBoyService.getParkingBoyInSomeStatus(ParkingBoyStatus.STOP.getStatus());
         if(parkingBoy == null)
             return null;
+        //找到第一个为有位置的parking_lot
+        ParkingLot validParkingLot = null;
+        ParkingLot temp = null;
+        for(int i = 0; i < parkingBoy.getParkingLotList().size(); i++){
+            temp = parkingBoy.getParkingLotList().get(i);
+            if(temp.getCapacity() > temp.getUsedCapacity()){
+                validParkingLot = temp;
+                break;
+            }
+        }
+        //将parking_lot的used_capacity+1
+        System.out.println(validParkingLot);
+        parkingLotService.addUsedCapacity(validParkingLot.getId());
+
+        validParkingLot = parkingLotService.findById(validParkingLot.getId());
+        parkingBoy = parkingBoyService.findById(parkingBoy.getId());
+        parkingOrder.setParkingLot(validParkingLot);
+        parkingOrder.setParkParkingBoy(parkingBoy);
         parkingOrder.setOrderStatus(OrderStatus.PARK);
+
         parkingOrder.setParkParkingBoy(parkingBoy);
         parkingOrder.setParkingLot(parkingBoy.getParkingLotList().get(0));
+
         parkingOrder.setStartTime(new Date());
 
         return orderRepository.save(parkingOrder);
     }
 
-    public ParkingOrder CustomerFetch(ParkingOrder parkingOrder) throws Exception {
+
+    public ParkingOrder customerFetch(String fetchId) throws Exception {
+        ParkingOrder parkingOrder = orderRepository.findById(fetchId).orElseThrow(() -> new BusinessException(BusinessExceptionType.RECODE_NOT_FOUNT));
         ParkingLot parkingLot = parkingOrder.getParkingLot();
         List<ParkingBoy> parkingBoyList = parkingBoyService.getParkingBoyByParkingLot(parkingLot.getId(), String.valueOf(ParkingBoyStatus.OPEN));
         if (parkingBoyList.size() == 0) {
@@ -76,5 +102,7 @@ public class ParkingOrderService {
 
         return orderRepository.save(parkingOrder);
     }
+
+
 
 }

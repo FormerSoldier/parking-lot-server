@@ -22,12 +22,6 @@ public class CustomerController implements BaseController<Customer,String> {
 
     @Autowired
     UserService userService;
-/*
-* username:账号
-* password:密码
-* phone:手机
-* name:昵称
-* */
 
     @PostMapping("/login")
     public String login(@RequestBody User user){
