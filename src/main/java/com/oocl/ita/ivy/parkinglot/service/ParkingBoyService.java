@@ -6,6 +6,7 @@ import com.oocl.ita.ivy.parkinglot.entity.ParkingLot;
 import com.oocl.ita.ivy.parkinglot.entity.ParkingOrder;
 import com.oocl.ita.ivy.parkinglot.entity.User;
 import com.oocl.ita.ivy.parkinglot.entity.enums.BusinessExceptionType;
+import com.oocl.ita.ivy.parkinglot.entity.enums.ParkingBoyStatus;
 import com.oocl.ita.ivy.parkinglot.entity.enums.Role;
 import com.oocl.ita.ivy.parkinglot.exception.BusinessException;
 import com.oocl.ita.ivy.parkinglot.repository.ParkingBoyRepository;
@@ -95,4 +96,9 @@ public class ParkingBoyService implements BaseService<ParkingBoy, String> {
         return parkingBoyRepository.getParkingBoyByParkingLot(id, status);
     }
 
+    public ParkingBoy changeParkingBoyStatus(String id) {
+        ParkingBoy parkingBoy=parkingBoyRepository.findById(id).orElseThrow(()->new BusinessException(BusinessExceptionType.RECODE_NOT_FOUNT));
+        parkingBoy.setStatus(parkingBoy.getStatus()==ParkingBoyStatus.OPEN?ParkingBoyStatus.STOP:ParkingBoyStatus.OPEN);
+        return parkingBoyRepository.save(parkingBoy);
+    }
 }
