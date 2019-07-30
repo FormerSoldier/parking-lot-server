@@ -24,14 +24,12 @@ public class HrService {
         return hrRepository.save(hr);
     }
 
-//    public User update(User hr) {
-//        User oldHr = hrRepository.findById(hr.getId()).orElseThrow(() -> new BusinessException(BusinessExceptionType.RECODE_NOT_FOUNT));
-//        hr.set
-//        ParkingBoy oldParkingBoy=parkingBoyRepository.findById(parkingBoy.getId()).orElseThrow(() ->new BusinessException(BusinessExceptionType.RECODE_NOT_FOUNT));
-//        parkingBoy.setUser(oldParkingBoy.getUser());
-//        return parkingBoyRepository.save(parkingBoy);
-//        return hrRepository.save(hr);
-//    }
+    public User update(User hr) {
+        User oldHr = hrRepository.findById(hr.getId()).orElseThrow(() -> new BusinessException(BusinessExceptionType.RECODE_NOT_FOUNT));
+        hr.setPassword(oldHr.getPassword());
+        hr.setUsername(oldHr.getUsername());
+        return hrRepository.save(hr);
+    }
 
     public void deleteById(Integer id) {
         User hr = hrRepository.findById(id).orElseThrow(() -> new BusinessException(BusinessExceptionType.RECODE_NOT_FOUNT));

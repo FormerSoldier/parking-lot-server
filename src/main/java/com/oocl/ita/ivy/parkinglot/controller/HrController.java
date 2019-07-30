@@ -36,9 +36,9 @@ public class HrController {
         hrService.deleteById(id);
     }
 
-//    @PutMapping
-//    public User update(@RequestBody User hr) {
-//        return hrService.update(hr);
-//    }
+    @PutMapping
+    public User update(@RequestBody User hr) {
+        return hrService.update(hr);
+    }
 
 }
