@@ -6,6 +6,7 @@ import com.oocl.ita.ivy.parkinglot.entity.enums.BusinessExceptionType;
 import com.oocl.ita.ivy.parkinglot.entity.enums.Role;
 import com.oocl.ita.ivy.parkinglot.exception.BusinessException;
 import com.oocl.ita.ivy.parkinglot.repository.HrRepository;
+import com.oocl.ita.ivy.parkinglot.repository.UserRepository;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -17,17 +18,25 @@ public class HrService {
 
     @Autowired
     private HrRepository hrRepository;
+    @Autowired
+    private UserRepository userRepository;
+
+    @Autowired
+    private UserService userService;
 
     public User save(User hr) {
-        hr.setRoles(Role.HR.getRole());
-        hr.setPassword(DigestUtils.sha256Hex(hr.getPassword()));
-        return hrRepository.save(hr);
+        if (userRepository.findByUsername(hr.getUsername()).isPresent()) {
+            throw new BusinessException(BusinessExceptionType.USERNAME_EXISTS);
+        }
+
+        return userService.register(hr, Role.HR);
     }
 
     public User update(User hr) {
         User oldHr = hrRepository.findById(hr.getId()).orElseThrow(() -> new BusinessException(BusinessExceptionType.RECODE_NOT_FOUNT));
         hr.setPassword(oldHr.getPassword());
         hr.setUsername(oldHr.getUsername());
+        hr.setRoles(oldHr.getRoles());
         return hrRepository.save(hr);
     }
 
