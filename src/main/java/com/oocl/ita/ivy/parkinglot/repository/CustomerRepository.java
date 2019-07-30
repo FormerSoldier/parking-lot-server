@@ -6,6 +6,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
 import java.util.Optional;
 
 @Repository
@@ -19,4 +20,8 @@ public interface CustomerRepository extends JpaRepository<Customer, String> {
     @Override
     @Query(value="SELECT * FROM customer INNER JOIN user_master ON user_master.id = :id AND user_master.id = customer.user_id",nativeQuery = true)
     Optional<Customer> findById(@Param("id") String id);
+
+    @Override
+    @Query(value = "SELECT * FROM customer INNER JOIN user_master ON customer.user_id = user_master.id WHERE delete_flag = 0", nativeQuery = true)
+    List<Customer> findAll();
 }

@@ -2,6 +2,7 @@ package com.oocl.ita.ivy.parkinglot.service;
 
 import com.oocl.ita.ivy.parkinglot.entity.Customer;
 
+import com.oocl.ita.ivy.parkinglot.entity.ParkingBoyDTO;
 import com.oocl.ita.ivy.parkinglot.entity.ParkingOrder;
 import com.oocl.ita.ivy.parkinglot.entity.enums.BusinessExceptionType;
 import com.oocl.ita.ivy.parkinglot.entity.enums.OrderStatus;
@@ -30,5 +31,6 @@ public class ParkingOrderService {
         parkingOrder.setOrderStatus(OrderStatus.PROGRESSING);
         return orderRepository.save(parkingOrder);
     }
+
 
 }

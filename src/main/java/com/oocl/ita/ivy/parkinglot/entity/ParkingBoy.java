@@ -29,7 +29,7 @@ public class ParkingBoy {
     private User user;
 
     @NotNull
-    private boolean free=true;
+    private String status;
 
     @NotNull
     private String name;
