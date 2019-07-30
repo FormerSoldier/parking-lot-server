@@ -4,6 +4,10 @@ import com.oocl.ita.ivy.parkinglot.entity.ParkingBoyVo;
 import com.oocl.ita.ivy.parkinglot.entity.ParkingOrder;
 import com.oocl.ita.ivy.parkinglot.service.ParkingOrderService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -22,7 +26,6 @@ public class ParkingOrderController {
 
     @PostMapping("/fetch")
     public ParkingOrder fetch(@RequestBody String fetchId) throws Exception {
-
         System.out.println(fetchId);
         return orderService.customerFetch(fetchId);
     }
@@ -43,5 +46,10 @@ public class ParkingOrderController {
 
         System.out.println("asdasdasdasdasdasdasdasdasdasdasd");
         return orderService.getMySelfAllOrders();
+    }
+
+    @GetMapping(params = {"page"})
+    public Page<ParkingOrder> parkingOrders(@PageableDefault(size = 15) Pageable pageable){
+        return orderService.findAll(pageable);
     }
 }
