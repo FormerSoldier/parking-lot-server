@@ -7,6 +7,7 @@ import com.oocl.ita.ivy.parkinglot.entity.enums.OrderStatus;
 import com.oocl.ita.ivy.parkinglot.entity.enums.ParkingBoyStatus;
 import com.oocl.ita.ivy.parkinglot.exception.BusinessException;
 import com.oocl.ita.ivy.parkinglot.repository.CustomerRepository;
+import com.oocl.ita.ivy.parkinglot.repository.ParkingBoyRepository;
 import com.oocl.ita.ivy.parkinglot.repository.ParkingLotRepository;
 import com.oocl.ita.ivy.parkinglot.repository.ParkingOrderRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,6 +15,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class ParkingOrderService {
@@ -28,6 +30,8 @@ public class ParkingOrderService {
     private ParkingBoyService parkingBoyService;
     @Autowired
     private ParkingLotRepository parkingLotRepository;
+    @Autowired
+    private ParkingBoyRepository parkingBoyRepository;
 
 
     public ParkingOrder save(String customerUsername, String carNo) {
@@ -45,23 +49,25 @@ public class ParkingOrderService {
 
     public ParkingOrder customerPark(String customerUsername, String carNo) {
 
-        ParkingOrder parkingOrder = save(customerUsername,carNo);
+        ParkingOrder parkingOrder = save(customerUsername, carNo);
         /*
-        * 1.先把订单分配给有停车空位，并且是open的parkingboy
-        * 2.如果没有open的，就把订单给stop的parkingboy
-        * 3.没有就返回
-        **/
+         * 1.先把订单分配给有停车空位，并且是open的parkingboy
+         * 2.如果没有open的，就把订单给stop的parkingboy
+         * 3.没有就返回
+         **/
         ParkingBoy parkingBoy = parkingBoyService.getParkingBoyInSomeStatus(ParkingBoyStatus.OPEN.getStatus());
-        if(parkingBoy == null)
+//        List<ParkingBoy> OpenedAndHasFreePlaceParkingBoyList = parkingBoyRepository.findAllByStatus(ParkingBoyStatus.OPEN)
+//                .stream()
+//                .filter(ParkingBoy::hasFreeParkingLot).collect(Collectors.toList());
+
+        if (parkingBoy == null)
             parkingBoyService.getParkingBoyInSomeStatus(ParkingBoyStatus.STOP.getStatus());
-        if(parkingBoy == null)
-            return null;
         //找到第一个为有位置的parking_lot
         ParkingLot validParkingLot = null;
         ParkingLot temp = null;
-        for(int i = 0; i < parkingBoy.getParkingLotList().size(); i++){
+        for (int i = 0; i < parkingBoy.getParkingLotList().size(); i++) {
             temp = parkingBoy.getParkingLotList().get(i);
-            if(temp.getCapacity() > temp.getUsedCapacity()){
+            if (temp.getCapacity() > temp.getUsedCapacity()) {
                 validParkingLot = temp;
                 break;
             }
@@ -74,7 +80,11 @@ public class ParkingOrderService {
         parkingBoy = parkingBoyService.findById(parkingBoy.getId());
         parkingOrder.setParkingLot(validParkingLot);
         parkingOrder.setParkParkingBoy(parkingBoy);
-        parkingOrder.setOrderStatus(OrderStatus.PARK);
+        if (parkingBoy == null) {
+            parkingOrder.setOrderStatus(OrderStatus.PROGRESSING);
+        } else {
+            parkingOrder.setOrderStatus(OrderStatus.PARK);
+        }
 
         parkingOrder.setParkParkingBoy(parkingBoy);
         parkingOrder.setParkingLot(parkingBoy.getParkingLotList().get(0));

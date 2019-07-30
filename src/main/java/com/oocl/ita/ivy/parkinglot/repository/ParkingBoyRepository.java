@@ -1,6 +1,7 @@
 package com.oocl.ita.ivy.parkinglot.repository;
 
 import com.oocl.ita.ivy.parkinglot.entity.ParkingBoy;
+import com.oocl.ita.ivy.parkinglot.entity.enums.ParkingBoyStatus;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -41,4 +42,5 @@ public interface ParkingBoyRepository extends JpaRepository<ParkingBoy, String> 
             "    WHERE status = :status", nativeQuery = true)
     List<ParkingBoy> getParkingBoyByParkingLot(@Param("id") String id, @Param("status") String status);
 
+    List<ParkingBoy> findAllByStatus(ParkingBoyStatus status);
 }
