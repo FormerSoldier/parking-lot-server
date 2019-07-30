@@ -17,8 +17,5 @@ public class ParkingOrderController {
     public ParkingOrder save(@PathVariable String customerUsername, @PathVariable String carNo) {
         return orderService.save(customerUsername, carNo);
     }
-/*  @GetMapping
-    public ParkingBoyDTO g(){
-        return orderService.getParkingBoyDTO();
-    }*/
+
 }

@@ -2,6 +2,7 @@ package com.oocl.ita.ivy.parkinglot.controller;
 
 import com.oocl.ita.ivy.parkinglot.entity.ParkingBoy;
 import com.oocl.ita.ivy.parkinglot.entity.ParkingLot;
+import com.oocl.ita.ivy.parkinglot.entity.ParkingOrder;
 import com.oocl.ita.ivy.parkinglot.entity.enums.BusinessExceptionType;
 import com.oocl.ita.ivy.parkinglot.exception.BusinessException;
 import com.oocl.ita.ivy.parkinglot.repository.UserRepository;
@@ -64,6 +65,14 @@ public class ParkingBoyController implements BaseController<ParkingBoy, String> 
     @GetMapping("/{id}/parking-lots")
     public List<ParkingLot> getParkingLotsById(@PathVariable String id){
         return parkingBoyService.getParkingLotsByID(id);
+    }
+
+
+    @GetMapping("/boy")
+    public ParkingBoy g(){
+        ParkingBoy parkingBoy = parkingBoyService.getParkingBoyDTO();
+
+        return parkingBoy;
     }
 
 

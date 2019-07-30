@@ -2,6 +2,7 @@ package com.oocl.ita.ivy.parkinglot.service;
 
 import com.oocl.ita.ivy.parkinglot.entity.ParkingBoy;
 import com.oocl.ita.ivy.parkinglot.entity.ParkingLot;
+import com.oocl.ita.ivy.parkinglot.entity.ParkingOrder;
 import com.oocl.ita.ivy.parkinglot.entity.User;
 import com.oocl.ita.ivy.parkinglot.entity.enums.BusinessExceptionType;
 import com.oocl.ita.ivy.parkinglot.entity.enums.Role;
@@ -70,5 +71,7 @@ public class ParkingBoyService implements BaseService<ParkingBoy, String> {
         parkingBoy.setUser(oldParkingBoy.getUser());
         return parkingBoyRepository.save(parkingBoy);
     }
-
+    public ParkingBoy getParkingBoyDTO(){
+        return parkingBoyRepository.getParkingBoyIdAndParkingBoyId();
+    }
 }

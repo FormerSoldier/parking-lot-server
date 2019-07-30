@@ -20,7 +20,7 @@ public class ParkingOrderService {
     @Autowired
     private CustomerRepository customerRepository;
 
-    public ParkingOrder save(String customerUsername, String carNo) {
+    /*public ParkingOrder save(String customerUsername, String carNo) {
         Customer customer = customerRepository.findByUsername(customerUsername);
         if (customer == null) {
             new BusinessException(BusinessExceptionType.RECODE_NOT_FOUNT);
@@ -30,7 +30,16 @@ public class ParkingOrderService {
         parkingOrder.setCustomer(customer);
         parkingOrder.setOrderStatus(OrderStatus.PROGRESSING);
         return orderRepository.save(parkingOrder);
+    }*/
+
+    public ParkingOrder save(String customerUsername, String carNo) {
+        /*
+        * 1.先把订单分配给有停车空位，并且是open的parkingboy
+        * 2.如果没有open的，就把订单给stop的parkingboy
+        * */
     }
+
+
 
 
 }
