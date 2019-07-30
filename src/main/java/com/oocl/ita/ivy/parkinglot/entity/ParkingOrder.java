@@ -34,8 +34,12 @@ public class ParkingOrder {
     private Date endTime;
 
     @OneToOne
-    @JoinColumn(name = "parkingboy_id")
-    private ParkingBoy parkingBoy;
+    @JoinColumn(name = "park_Parkingboy_id")
+    private ParkingBoy parkParkingBoy;
+
+    @OneToOne
+    @JoinColumn(name = "fetch_parkingboy_id")
+    private ParkingBoy fetchParkingBoy;
 
     @OneToOne
     @JoinColumn(name = "parkinglot_id")
@@ -47,5 +51,9 @@ public class ParkingOrder {
 
     private double price;
 
+    //submit order time
     private Date submitTime;
+
+    //fetch order time
+    private Date fetchTime;
 }
