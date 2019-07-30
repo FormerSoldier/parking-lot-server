@@ -24,4 +24,9 @@ public class ParkingOrderController {
         return orderService.CustomerPark(parkingOrder);
     }
 
+    @PostMapping("/fetch/{id}")
+    public ParkingOrder fetch(@RequestBody ParkingOrder parkingOrder) throws Exception {
+        return orderService.CustomerFetch(parkingOrder);
+    }
+
 }
