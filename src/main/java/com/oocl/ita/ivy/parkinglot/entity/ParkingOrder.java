@@ -17,8 +17,7 @@ public class ParkingOrder {
     @GenericGenerator(name = "uuid", strategy = "uuid")
     private String id;
 
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private int number;
+    private String number = Math.random() * 100000 + "";
 
 
     @NotNull
