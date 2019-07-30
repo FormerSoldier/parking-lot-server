@@ -27,7 +27,7 @@ public class HrController {
     }
 
     @GetMapping(params = {"page"})
-    public Page<User> findAll(@PageableDefault(size = 15) Pageable pageable) {
+    public Page<User> findAll(@PageableDefault(size = 15)Pageable pageable) {
         return hrService.findAll(pageable);
     }
 
