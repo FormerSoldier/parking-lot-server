@@ -10,6 +10,8 @@ import com.oocl.ita.ivy.parkinglot.repository.CustomerRepository;
 import com.oocl.ita.ivy.parkinglot.repository.ParkingLotRepository;
 import com.oocl.ita.ivy.parkinglot.repository.ParkingOrderRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
@@ -105,4 +107,8 @@ public class ParkingOrderService {
 
 
 
+
+    public Page<ParkingOrder> findAll(Pageable pageable) {
+        return orderRepository.findAll(pageable);
+    }
 }
