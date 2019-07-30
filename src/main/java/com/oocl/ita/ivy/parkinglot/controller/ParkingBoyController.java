@@ -72,12 +72,6 @@ public class ParkingBoyController implements BaseController<ParkingBoy, String> 
         return parkingBoyService.getCurrentParkingBoy();
     }
 
-    @GetMapping("/boy")
-    public ParkingBoy g(){
-        ParkingBoy parkingBoy = parkingBoyService.getParkingBoyDTO();
-
-        return parkingBoy;
-    }
 
 
 }

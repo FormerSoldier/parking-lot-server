@@ -5,7 +5,8 @@ public enum OrderStatus {
     PROGRESSING("PROGRESSING"),
     UNPAID("UNPAID"),
     PAID("PAID"),
-    FINISHED("FINISHED");
+    FINISHED("FINISHED"),
+    PARK("PARK");
 
     public String getStatus() {
         return status;
