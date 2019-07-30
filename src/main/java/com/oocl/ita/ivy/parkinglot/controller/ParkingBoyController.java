@@ -2,14 +2,15 @@ package com.oocl.ita.ivy.parkinglot.controller;
 
 import com.oocl.ita.ivy.parkinglot.entity.ParkingBoy;
 import com.oocl.ita.ivy.parkinglot.entity.ParkingLot;
+import com.oocl.ita.ivy.parkinglot.entity.enums.BusinessExceptionType;
+import com.oocl.ita.ivy.parkinglot.exception.BusinessException;
+import com.oocl.ita.ivy.parkinglot.repository.UserRepository;
 import com.oocl.ita.ivy.parkinglot.service.ParkingBoyService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.*;
 
-import java.time.Instant;
 import java.util.List;
 
 @RestController
@@ -19,9 +20,14 @@ public class ParkingBoyController implements BaseController<ParkingBoy, String> 
     @Autowired
     private ParkingBoyService parkingBoyService;
 
+    @Autowired
+    private UserRepository userRepository;
 
     @Override
     public ParkingBoy save(ParkingBoy parkingBoy) {
+        if(userRepository.findByUsername(parkingBoy.getUser().getUsername()).isPresent()){
+            throw new BusinessException(BusinessExceptionType.USERNAME_EXISTS);
+        }
         return parkingBoyService.save(parkingBoy);
     }
 
@@ -47,7 +53,7 @@ public class ParkingBoyController implements BaseController<ParkingBoy, String> 
 
     @Override
     public ParkingBoy update(ParkingBoy parkingBoy) {
-        return parkingBoyService.save(parkingBoy);
+        return parkingBoyService.update(parkingBoy);
     }
 
     @PutMapping("/{id}/parking-lots")
