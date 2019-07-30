@@ -41,6 +41,8 @@ public class ParkingOrder {
     @JoinColumn(name = "parkinglot_id")
     private ParkingLot parkingLot;
 
+    @NotNull
+    @Enumerated(EnumType.STRING)
     private OrderStatus orderStatus;
 
     private double price;
