@@ -32,4 +32,9 @@ public interface ParkingBoyRepository extends JpaRepository<ParkingBoy, String> 
     Optional<ParkingBoy> findByUsername(@Param("username") String username);
 
     ParkingBoy findParkingBoyByUserId(Integer id);
+
+
+//    @Query(value="",nativeQuery = true)
+//    public ParkingBoy getParkingBoyBy
+
 }
