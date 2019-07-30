@@ -1,5 +1,6 @@
 package com.oocl.ita.ivy.parkinglot.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 import org.hibernate.annotations.GenericGenerator;
 
@@ -24,4 +25,10 @@ public class ParkingLot {
     private int capacity;
     @Column
     private String address;
+
+    private int usedCapacity=0;
+    @JsonIgnore
+    public int getFreeCapacity(){
+        return this.capacity-this.usedCapacity;
+    }
 }
