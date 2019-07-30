@@ -14,12 +14,4 @@ import javax.transaction.Transactional;
 @Repository
 public interface ParkingOrderRepository extends JpaRepository<ParkingOrder, String> {
 
-
-    @Transactional
-    @Modifying(clearAutomatically = true)
-    @Query(value="UPDATE parking_order SET parkingboy_id = :parkingBoyId, parkinglot_id = :parkingLotId WHERE id = :id",nativeQuery = true)
-    ParkingOrder updateOrderParkingLotIdAndParkingBoyId(@Param("parkingBoyId") String parkingBoyId,
-                                                @Param("parkingLotId") String parkingLotId,
-                                                @Param("id") String id);
-
 }

@@ -1,10 +1,7 @@
 package com.oocl.ita.ivy.parkinglot.service;
 
-import com.oocl.ita.ivy.parkinglot.entity.Customer;
+import com.oocl.ita.ivy.parkinglot.entity.*;
 
-import com.oocl.ita.ivy.parkinglot.entity.ParkingBoy;
-import com.oocl.ita.ivy.parkinglot.entity.ParkingBoyDTO;
-import com.oocl.ita.ivy.parkinglot.entity.ParkingOrder;
 import com.oocl.ita.ivy.parkinglot.entity.enums.BusinessExceptionType;
 import com.oocl.ita.ivy.parkinglot.entity.enums.OrderStatus;
 import com.oocl.ita.ivy.parkinglot.entity.enums.ParkingBoyStatus;
@@ -19,6 +16,8 @@ import java.util.Date;
 @Service
 public class ParkingOrderService {
 
+    @Autowired
+    private ParkingLotService parkingLotService;
     @Autowired
     private ParkingOrderRepository orderRepository;
     @Autowired
@@ -40,7 +39,9 @@ public class ParkingOrderService {
         return orderRepository.save(parkingOrder);
     }
 
-    public ParkingOrder CustomerPark(ParkingOrder parkingOrder) {
+    public ParkingOrder CustomerPark(String customerUsername, String carNo) {
+
+        ParkingOrder parkingOrder = save(customerUsername,carNo);
         /*
         * 1.先把订单分配给有停车空位，并且是open的parkingboy
         * 2.如果没有open的，就把订单给stop的parkingboy
@@ -51,13 +52,26 @@ public class ParkingOrderService {
             parkingBoyService.getParkingBoyInSomeStatus(ParkingBoyStatus.STOP.getStatus());
         if(parkingBoy == null)
             return null;
+        //找到第一个为有位置的parking_lot
+        ParkingLot validParkingLot = null;
+        ParkingLot temp = null;
+        for(int i = 0; i < parkingBoy.getParkingLotList().size(); i++){
+            temp = parkingBoy.getParkingLotList().get(i);
+            if(temp.getCapacity() > temp.getUsedCapacity()){
+                validParkingLot = temp;
+                break;
+            }
+        }
+        //将parking_lot的used_capacity+1
+        System.out.println(validParkingLot);
+        parkingLotService.addUsedCapacity(validParkingLot.getId());
+
+        validParkingLot = parkingLotService.findById(validParkingLot.getId());
+        parkingBoy = parkingBoyService.findById(parkingBoy.getId());
+        parkingOrder.setParkingLot(validParkingLot);
+        parkingOrder.setParkParkingBoy(parkingBoy);
         parkingOrder.setOrderStatus(OrderStatus.PARK);
         parkingOrder.setStartTime(new Date());
-        orderRepository.save(parkingOrder);
-        System.out.println("parkingboy的id为"+parkingBoy.getId());
-        System.out.println("parkinglot的id为"+parkingBoy.getParkingLotList().get(0).getId());
-
-        orderRepository.updateOrderParkingLotIdAndParkingBoyId(parkingBoy.getId(), parkingBoy.getParkingLotList().get(0).getId(),parkingOrder.getId());
 
         return orderRepository.save(parkingOrder);
     }

@@ -42,8 +42,8 @@ public class ParkingLotService implements BaseService<ParkingLot, String> {
         return parkingLotRepository.findAll(pageable);
     }
 
-    public ParkingLot getValidParkingLot(){
-        return parkingLotRepository.getValidParkingLot();
-    }
 
+    public void addUsedCapacity(String id){
+        parkingLotRepository.addUsedCapacity(id);
+    }
 }
