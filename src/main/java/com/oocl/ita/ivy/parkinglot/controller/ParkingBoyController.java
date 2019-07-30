@@ -73,7 +73,10 @@ public class ParkingBoyController implements BaseController<ParkingBoy, String> 
         return parkingBoyService.getCurrentParkingBoy();
     }
 
-
+    @PutMapping("/{id}/parking-status")
+    public ParkingBoy changeParkingBoyStatus(@PathVariable String id){
+        return  parkingBoyService.changeParkingBoyStatus(id);
+    }
 
 
 
