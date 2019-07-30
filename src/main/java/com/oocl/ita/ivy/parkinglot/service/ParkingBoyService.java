@@ -70,4 +70,5 @@ public class ParkingBoyService implements BaseService<ParkingBoy, String> {
         parkingBoy.setUser(oldParkingBoy.getUser());
         return parkingBoyRepository.save(parkingBoy);
     }
+
 }

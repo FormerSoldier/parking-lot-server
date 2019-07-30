@@ -1,5 +1,6 @@
 package com.oocl.ita.ivy.parkinglot.controller;
 
+import com.oocl.ita.ivy.parkinglot.entity.ParkingBoyDTO;
 import com.oocl.ita.ivy.parkinglot.entity.ParkingOrder;
 import com.oocl.ita.ivy.parkinglot.service.ParkingOrderService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,4 +17,8 @@ public class ParkingOrderController {
     public ParkingOrder save(@PathVariable String customerUsername, @PathVariable String carNo) {
         return orderService.save(customerUsername, carNo);
     }
+/*  @GetMapping
+    public ParkingBoyDTO g(){
+        return orderService.getParkingBoyDTO();
+    }*/
 }

@@ -17,6 +17,10 @@ public class ParkingOrder {
     @GenericGenerator(name = "uuid", strategy = "uuid")
     private String id;
 
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private int number;
+
+
     @NotNull
     @OneToOne
     @JoinColumn(name = "customer_id")
