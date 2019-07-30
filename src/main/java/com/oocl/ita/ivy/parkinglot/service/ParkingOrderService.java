@@ -104,5 +104,7 @@ public class ParkingOrderService {
     }
 
 
-
+    public ParkingOrder findById(String id) {
+        return orderRepository.findById(id).orElseThrow(() -> new BusinessException(BusinessExceptionType.RECODE_NOT_FOUNT));
+    }
 }

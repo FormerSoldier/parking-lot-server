@@ -17,12 +17,12 @@ public class UserOrderController {
     @Autowired
     private UserOrderService userOrderService;
 
-    @GetMapping(path = "{customerId}/fetchable")
+    @GetMapping(path = "/{customerId}/fetchable")
     List<ParkingOrder> getOrdersByCustomerIdByFetchable(@PathVariable String customerId) {
         return userOrderService.getOrdersByCustomerIdByFetchable(customerId);
     }
 
-    @GetMapping(path = "{customerId}/all")
+    @GetMapping(path = "/{customerId}/all")
     List<ParkingOrder> getOrdersByCustomerIdByAll(@PathVariable String customerId) {
         return userOrderService.getOrdersByCustomerIdByAll(customerId);
     }
