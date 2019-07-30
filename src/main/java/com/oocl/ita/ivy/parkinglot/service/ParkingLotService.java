@@ -41,4 +41,9 @@ public class ParkingLotService implements BaseService<ParkingLot, String> {
     public Page<ParkingLot> findAll(Pageable pageable) {
         return parkingLotRepository.findAll(pageable);
     }
+
+
+    public void addUsedCapacity(String id){
+        parkingLotRepository.addUsedCapacity(id);
+    }
 }
