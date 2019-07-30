@@ -1,6 +1,7 @@
 package com.oocl.ita.ivy.parkinglot.repository;
 
 import com.oocl.ita.ivy.parkinglot.entity.ParkingBoy;
+import com.oocl.ita.ivy.parkinglot.entity.enums.ParkingBoyStatus;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -19,7 +20,7 @@ public interface ParkingBoyRepository extends JpaRepository<ParkingBoy, String> 
     @Query(value = "SELECT * FROM parking_boy INNER JOIN user_master ON parking_boy.user_id = user_master.id WHERE delete_flag = 0", nativeQuery = true)
     Page<ParkingBoy> findAll(Pageable pageable);
 
-    @Query(value="SELECT parking_boy.*, new_table.id AS parkinglot_id FROM parking_boy INNER JOIN ( SELECT pl_id_table.*, parking_boy_id FROM parking_boy_parking_lot_list AS pbpll INNER JOIN ( SELECT * FROM parking_lot WHERE capacity > used_capacity LIMIT 1, 1 ) AS pl_id_table ON pbpll.parking_lot_list_id = pl_id_table.id ) AS new_table ON parking_boy.id = new_table.parking_boy_id WHERE STATUS = :status",nativeQuery = true)
+    @Query(value = "SELECT parking_boy.*, new_table.id AS parkinglot_id FROM parking_boy INNER JOIN ( SELECT pl_id_table.*, parking_boy_id FROM parking_boy_parking_lot_list AS pbpll INNER JOIN ( SELECT * FROM parking_lot WHERE capacity > used_capacity LIMIT 0, 1 ) AS pl_id_table ON pbpll.parking_lot_list_id = pl_id_table.id ) AS new_table ON parking_boy.id = new_table.parking_boy_id WHERE STATUS = :status", nativeQuery = true)
     ParkingBoy getParkingBoyInSomeStatus(@Param("status") String status);
 
     @Query(
@@ -41,4 +42,5 @@ public interface ParkingBoyRepository extends JpaRepository<ParkingBoy, String> 
             "    WHERE status = :status", nativeQuery = true)
     List<ParkingBoy> getParkingBoyByParkingLot(@Param("id") String id, @Param("status") String status);
 
+    List<ParkingBoy> findAllByStatus(ParkingBoyStatus status);
 }

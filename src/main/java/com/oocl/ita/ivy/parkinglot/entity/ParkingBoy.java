@@ -1,5 +1,6 @@
 package com.oocl.ita.ivy.parkinglot.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.oocl.ita.ivy.parkinglot.entity.enums.Gender;
 import com.oocl.ita.ivy.parkinglot.entity.enums.ParkingBoyStatus;
 import lombok.Data;
@@ -61,4 +62,12 @@ public class ParkingBoy {
     @UpdateTimestamp
     private Date updateTime;
 
+
+    @JsonIgnore
+    public boolean hasFreeParkingLot(){
+        if(parkingLotList == null || parkingLotList.size() == 0){
+            return false;
+        }
+        return parkingLotList.stream().anyMatch(parkingLot -> parkingLot.getCapacity() > parkingLot.getUsedCapacity());
+    }
 }

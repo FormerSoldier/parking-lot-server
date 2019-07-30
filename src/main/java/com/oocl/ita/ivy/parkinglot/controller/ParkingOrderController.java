@@ -24,10 +24,14 @@ public class ParkingOrderController {
         return orderService.customerPark(customerUsername, carNo);
     }
 
-    @PostMapping("/fetch")
-    public ParkingOrder fetch(@RequestBody String fetchId) throws Exception {
+    @PostMapping("/fetch/{id}")
+    public ParkingOrder fetch(@PathVariable("id") String fetchId) throws Exception {
         System.out.println(fetchId);
         return orderService.customerFetch(fetchId);
+    }
+    @GetMapping("/{id}")
+    public ParkingOrder findById(@PathVariable String id){
+        return orderService.findById(id);
     }
 
     @GetMapping("/parkingboys/parkorders")
