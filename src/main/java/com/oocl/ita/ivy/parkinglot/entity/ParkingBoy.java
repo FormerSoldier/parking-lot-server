@@ -3,7 +3,9 @@ package com.oocl.ita.ivy.parkinglot.entity;
 import com.oocl.ita.ivy.parkinglot.entity.enums.Gender;
 import com.oocl.ita.ivy.parkinglot.entity.enums.ParkingBoyStatus;
 import lombok.Data;
+import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.GenericGenerator;
+import org.hibernate.annotations.UpdateTimestamp;
 import org.springframework.data.annotation.CreatedDate;
 
 import javax.persistence.*;
@@ -47,8 +49,16 @@ public class ParkingBoy {
 
 
     @Column
-    @CreatedDate
+    @CreationTimestamp
     @NotNull
     private Date joinTime = new Date();
+
+    @Column
+    @CreationTimestamp
+    private Date createTime;
+
+    @Column
+    @UpdateTimestamp
+    private Date updateTime;
 
 }
