@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 
@@ -116,7 +117,7 @@ public class ParkingOrderService {
         ParkingBoyVo parkingBoyVo = null;
         for(int i = 0; i < parkingOrders.size(); i++){
             ParkingBoy parkParkingBoy = parkingOrders.get(i).getParkParkingBoy();
-            if(me.getId() == parkParkingBoy.getId()){
+            if(parkParkingBoy != null && me != null && me.getId() == parkParkingBoy.getId()){
                 ParkingOrder parkingOrder = parkingOrders.get(i);
                 Customer customer = parkingOrder.getCustomer();
                 User user = customer.getUser();
@@ -133,12 +134,14 @@ public class ParkingOrderService {
                 parkingBoyVo.setSubmitTime(parkingOrder.getSubmitTime());
                 parkingBoyVo.setParkingLotName(parkingLot.getName());
                 parkingBoyVo.setFetchTime(parkingOrder.getFetchTime());
-                parkingBoyVo.setParkParkingBoyName(parkParkingBoy.getName());
-                parkingBoyVo.setFetchParkingBoyName(fetchParkingBoy.getName());
+                parkingBoyVo.setParkParkingBoyName(parkParkingBoy.getName() == null ? null :parkParkingBoy.getName());
+                parkingBoyVo.setFetchParkingBoyName(fetchParkingBoy == null ? null :fetchParkingBoy.getName());
                 parkingBoyVo.setOrderStatus(parkingOrder.getOrderStatus());
+
+                result.add(parkingBoyVo);
             }
-            result.add(parkingBoyVo);
         }
+
         return result;
     }
 
@@ -149,7 +152,7 @@ public class ParkingOrderService {
         ParkingBoyVo parkingBoyVo = null;
         for(int i = 0; i < parkingOrders.size(); i++){
             ParkingBoy parkParkingBoy = parkingOrders.get(i).getFetchParkingBoy();
-            if(me.getId() == parkParkingBoy.getId()){
+            if(parkParkingBoy != null && me != null && me.getId() == parkParkingBoy.getId()){
                 ParkingOrder parkingOrder = parkingOrders.get(i);
                 Customer customer = parkingOrder.getCustomer();
                 User user = customer.getUser();
@@ -166,11 +169,13 @@ public class ParkingOrderService {
                 parkingBoyVo.setSubmitTime(parkingOrder.getSubmitTime());
                 parkingBoyVo.setParkingLotName(parkingLot.getName());
                 parkingBoyVo.setFetchTime(parkingOrder.getFetchTime());
-                parkingBoyVo.setParkParkingBoyName(parkParkingBoy.getName());
-                parkingBoyVo.setFetchParkingBoyName(fetchParkingBoy.getName());
+                parkingBoyVo.setParkParkingBoyName(parkParkingBoy.getName() == null ? null :parkParkingBoy.getName());
+                parkingBoyVo.setFetchParkingBoyName(fetchParkingBoy == null ? null :fetchParkingBoy.getName());
                 parkingBoyVo.setOrderStatus(parkingOrder.getOrderStatus());
+
+                result.add(parkingBoyVo);
             }
-            result.add(parkingBoyVo);
+
         }
         return result;
     }
@@ -179,21 +184,14 @@ public class ParkingOrderService {
         List<ParkingBoyVo> parkOrders = getMySelfParkOrders();
         List<ParkingBoyVo> fetchOrders = getMySelfFetchOrder();
 
-        List<ParkingBoyVo> results = new ArrayList<>(parkOrders.size() + fetchOrders.size());
-        int i = 0;
-        int j = 0;
-
-        while(i <= parkOrders.size() && j <= fetchOrders.size()){
-            results.add(parkOrders.get(i).getSubmitTime().before(fetchOrders.get(j).getSubmitTime()) ? parkOrders.get(i++) : fetchOrders.get(j));
-        }
-
-        while(i <= parkOrders.size()){
-            results.add(parkOrders.get(i++));
-        }
-        while(j <= fetchOrders.size()){
-            results.add(fetchOrders.get(j++));
-        }
-        return results;
+        parkOrders.addAll(fetchOrders);
+        parkOrders.sort(new Comparator<ParkingBoyVo>() {
+            @Override
+            public int compare(ParkingBoyVo o1, ParkingBoyVo o2) {
+                return  o1.getSubmitTime().toString().compareTo(o2.getSubmitTime().toString());
+            }
+        });
+        return parkOrders;
     }
 
 
