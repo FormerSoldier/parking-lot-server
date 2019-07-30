@@ -11,4 +11,9 @@ import java.util.List;
 
 @Repository
 public interface ParkingOrderRepository extends JpaRepository<ParkingOrder, String> {
+
+    @Query(value = "SELECT o.* from parking_order o, customer c WHERE o.customer_id = c.id",
+            nativeQuery = true)
+    List<ParkingOrder> findByCustomerId(String customerId);
+
 }
