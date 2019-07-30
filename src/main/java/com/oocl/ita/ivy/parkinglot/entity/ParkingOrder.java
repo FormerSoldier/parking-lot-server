@@ -2,7 +2,9 @@ package com.oocl.ita.ivy.parkinglot.entity;
 
 import com.oocl.ita.ivy.parkinglot.entity.enums.OrderStatus;
 import lombok.Data;
+import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.GenericGenerator;
+import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
@@ -55,4 +57,12 @@ public class ParkingOrder {
 
     //fetch order time
     private Date fetchTime;
+
+    @Column
+    @CreationTimestamp
+    private Date createTime;
+
+    @Column
+    @UpdateTimestamp
+    private Date updateTime;
 }

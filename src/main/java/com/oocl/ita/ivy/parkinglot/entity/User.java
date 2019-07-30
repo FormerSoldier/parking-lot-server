@@ -11,6 +11,7 @@ import javax.persistence.Entity;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 
 @Entity
@@ -43,6 +44,14 @@ public class User extends com.itmuch.lightsecurity.jwt.User {
 
     @Column
     private boolean deleteFlag;
+
+    @Column
+    @CreationTimestamp
+    private Date createTime;
+
+    @Column
+    @UpdateTimestamp
+    private Date updateTime;
 
     @Override
     public Integer getId() {
@@ -102,6 +111,21 @@ public class User extends com.itmuch.lightsecurity.jwt.User {
         this.deleteFlag = deleteFlag;
     }
 
+    public Date getCreateTime() {
+        return createTime;
+    }
+
+    public void setCreateTime(Date createTime) {
+        this.createTime = createTime;
+    }
+
+    public Date getUpdateTime() {
+        return updateTime;
+    }
+
+    public void setUpdateTime(Date updateTime) {
+        this.updateTime = updateTime;
+    }
 
     @Override
     public String toString() {
