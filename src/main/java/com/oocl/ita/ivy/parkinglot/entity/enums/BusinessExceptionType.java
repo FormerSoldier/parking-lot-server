@@ -5,7 +5,8 @@ import lombok.Getter;
 @Getter
 public enum BusinessExceptionType {
     RECODE_NOT_FOUNT(100, "RECORD_NOT_FOUNT", "Record not found"),
-    USERNAME_EXISTS(101,"USERNAME_EXISTS","Username is exists");
+    USERNAME_EXISTS(101,"USERNAME_EXISTS","Username is exists"),
+    PARKING_LOT_NOT_AVAILABLE(102, "PARKING_LOT_NOT_AVAILABLE", "No suitable parking lot.");
 
     private final int id;
     private final String name;

@@ -52,7 +52,7 @@ public class ParkingOrderService {
         return orderRepository.save(parkingOrder);
     }
 
-    public ParkingOrder customerPark(String customerUsername, String carNo) {
+    public ParkingOrder customerPark(String customerUsername, String carNo) throws BusinessException {
 
         ParkingOrder parkingOrder = save(customerUsername, carNo);
         /*
@@ -66,7 +66,12 @@ public class ParkingOrderService {
 //                .filter(ParkingBoy::hasFreeParkingLot).collect(Collectors.toList());
 
         if (parkingBoy == null)
-            parkingBoyService.getParkingBoyInSomeStatus(ParkingBoyStatus.STOP.getStatus());
+            parkingBoy = parkingBoyService.getParkingBoyInSomeStatus(ParkingBoyStatus.STOP.getStatus());
+
+        if (parkingBoy == null) {
+            throw new BusinessException(BusinessExceptionType.PARKING_LOT_NOT_AVAILABLE);
+        }
+
         //找到第一个为有位置的parking_lot
         ParkingLot validParkingLot = null;
         ParkingLot temp = null;
@@ -94,7 +99,7 @@ public class ParkingOrderService {
         parkingOrder.setParkParkingBoy(parkingBoy);
         parkingOrder.setParkingLot(parkingBoy.getParkingLotList().get(0));
 
-        Integer userId = customerService.findById(parkingOrder.getCustomer().getId()).getUser().getId();
+        Integer userId = parkingOrder.getCustomer().getUser().getId();
         String number = new Date().getTime() + Math.random() * 10000 + "" + userId;
         parkingOrder.setNumber(number);
 
@@ -122,14 +127,14 @@ public class ParkingOrderService {
         return orderRepository.save(parkingOrder);
     }
 
-    public List<ParkingBoyVo> getMySelfParkOrders(){
+    public List<ParkingBoyVo> getMySelfParkOrders() {
         ParkingBoy me = parkingBoyService.getCurrentParkingBoy();
         List<ParkingOrder> parkingOrders = orderRepository.findAll();
         List<ParkingBoyVo> result = new ArrayList<>();
         ParkingBoyVo parkingBoyVo = null;
-        for(int i = 0; i < parkingOrders.size(); i++){
+        for (int i = 0; i < parkingOrders.size(); i++) {
             ParkingBoy parkParkingBoy = parkingOrders.get(i).getParkParkingBoy();
-            if(me.getId() == parkParkingBoy.getId()){
+            if (me.getId() == parkParkingBoy.getId()) {
                 ParkingOrder parkingOrder = parkingOrders.get(i);
                 Customer customer = parkingOrder.getCustomer();
                 User user = customer.getUser();
@@ -155,14 +160,14 @@ public class ParkingOrderService {
         return result;
     }
 
-    public List<ParkingBoyVo> getMySelfFetchOrder(){
+    public List<ParkingBoyVo> getMySelfFetchOrder() {
         ParkingBoy me = parkingBoyService.getCurrentParkingBoy();
         List<ParkingOrder> parkingOrders = orderRepository.findAll();
         List<ParkingBoyVo> result = new ArrayList<>();
         ParkingBoyVo parkingBoyVo = null;
-        for(int i = 0; i < parkingOrders.size(); i++){
+        for (int i = 0; i < parkingOrders.size(); i++) {
             ParkingBoy parkParkingBoy = parkingOrders.get(i).getFetchParkingBoy();
-            if(me.getId() == parkParkingBoy.getId()){
+            if (me.getId() == parkParkingBoy.getId()) {
                 ParkingOrder parkingOrder = parkingOrders.get(i);
                 Customer customer = parkingOrder.getCustomer();
                 User user = customer.getUser();
@@ -188,7 +193,7 @@ public class ParkingOrderService {
         return result;
     }
 
-    public List<ParkingBoyVo> getMySelfAllOrders(){
+    public List<ParkingBoyVo> getMySelfAllOrders() {
         List<ParkingBoyVo> parkOrders = getMySelfParkOrders();
         List<ParkingBoyVo> fetchOrders = getMySelfFetchOrder();
 
@@ -196,19 +201,18 @@ public class ParkingOrderService {
         int i = 0;
         int j = 0;
 
-        while(i <= parkOrders.size() && j <= fetchOrders.size()){
+        while (i <= parkOrders.size() && j <= fetchOrders.size()) {
             results.add(parkOrders.get(i).getSubmitTime().before(fetchOrders.get(j).getSubmitTime()) ? parkOrders.get(i++) : fetchOrders.get(j));
         }
 
-        while(i <= parkOrders.size()){
+        while (i <= parkOrders.size()) {
             results.add(parkOrders.get(i++));
         }
-        while(j <= fetchOrders.size()){
+        while (j <= fetchOrders.size()) {
             results.add(fetchOrders.get(j++));
         }
         return results;
     }
-
 
 
     public Page<ParkingOrder> findAll(Pageable pageable) {
