@@ -1,5 +1,6 @@
 package com.oocl.ita.ivy.parkinglot.service;
 
+import com.itmuch.lightsecurity.jwt.UserOperator;
 import com.oocl.ita.ivy.parkinglot.entity.ParkingBoy;
 import com.oocl.ita.ivy.parkinglot.entity.ParkingLot;
 import com.oocl.ita.ivy.parkinglot.entity.User;
@@ -24,6 +25,9 @@ public class ParkingBoyService implements BaseService<ParkingBoy, String> {
 
     @Autowired
     private UserService userService;
+
+    @Autowired
+    UserOperator userOperator;
 
     @Override
     public ParkingBoy save(ParkingBoy parkingBoy) {
@@ -69,6 +73,15 @@ public class ParkingBoyService implements BaseService<ParkingBoy, String> {
         ParkingBoy oldParkingBoy=parkingBoyRepository.findById(parkingBoy.getId()).orElseThrow(() ->new BusinessException(BusinessExceptionType.RECODE_NOT_FOUNT));
         parkingBoy.setUser(oldParkingBoy.getUser());
         return parkingBoyRepository.save(parkingBoy);
+    }
+
+    public ParkingBoy getCurrentParkingBoy() {
+        Integer id = userOperator.getUser().getId();
+        return findByUserId(id);
+    }
+
+    private ParkingBoy findByUserId(Integer id) {
+        return parkingBoyRepository.findParkingBoyByUserId(id);
     }
 
 }
