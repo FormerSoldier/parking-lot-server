@@ -37,7 +37,6 @@ public class CustomerController implements BaseController<Customer,String> {
     @PostMapping
     @Override
     public Customer save(@RequestBody Customer customer) {
-        System.out.println(customer);
         return customerService.save(customer);
     }
 
