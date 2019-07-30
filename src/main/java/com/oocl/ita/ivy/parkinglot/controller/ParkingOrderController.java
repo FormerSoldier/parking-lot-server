@@ -1,9 +1,12 @@
 package com.oocl.ita.ivy.parkinglot.controller;
 
+import com.oocl.ita.ivy.parkinglot.entity.ParkingBoyVo;
 import com.oocl.ita.ivy.parkinglot.entity.ParkingOrder;
 import com.oocl.ita.ivy.parkinglot.service.ParkingOrderService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/orders")
@@ -22,5 +25,21 @@ public class ParkingOrderController {
 
         System.out.println(fetchId);
         return orderService.customerFetch(fetchId);
+    }
+
+    @GetMapping("/parkingboys/parkorders")
+    public List<ParkingBoyVo> getMySelfParkOrders(){
+        return orderService.getMySelfParkOrders();
+    }
+
+    @GetMapping("/parkingboys/fetchorders")
+    public List<ParkingBoyVo> getMySelfFetchOrder(){
+        return orderService.getMySelfFetchOrder();
+    }
+
+
+    @GetMapping("/parking-boys/orders")
+    public List<ParkingBoyVo> getAllParkingBoyVo(){
+        return orderService.getMySelfAllOrders();
     }
 }
