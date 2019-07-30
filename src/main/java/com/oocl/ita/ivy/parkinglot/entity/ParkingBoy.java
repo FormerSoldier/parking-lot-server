@@ -26,6 +26,7 @@ public class ParkingBoy {
 
     @OneToOne
     @NotNull
+    @JoinColumn(name="user_id")
     private User user;
 
     @NotNull
