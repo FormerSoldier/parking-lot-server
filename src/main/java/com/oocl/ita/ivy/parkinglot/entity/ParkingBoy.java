@@ -31,7 +31,7 @@ public class ParkingBoy {
 
     @NotNull
     @Enumerated(EnumType.STRING)
-    private ParkingBoyStatus status = ParkingBoyStatus.BUSY;
+    private ParkingBoyStatus status = ParkingBoyStatus.STOP;
 
     @NotNull
     private String name;
@@ -42,6 +42,8 @@ public class ParkingBoy {
     private int orderNumInOpen;
 
     private int orderNumInClose;
+
+    private boolean free;
 
 
     @Column

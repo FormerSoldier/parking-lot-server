@@ -6,7 +6,6 @@ import org.springframework.stereotype.Component;
 @Component
 @Data
 public class ParkingBoyDTO {
-    private String ParkingLotId;
+    private String parkingLotId;
     private String parkingBoyId;
-
 }

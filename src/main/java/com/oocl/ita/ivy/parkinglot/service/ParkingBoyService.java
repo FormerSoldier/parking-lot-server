@@ -3,6 +3,7 @@ package com.oocl.ita.ivy.parkinglot.service;
 import com.itmuch.lightsecurity.jwt.UserOperator;
 import com.oocl.ita.ivy.parkinglot.entity.ParkingBoy;
 import com.oocl.ita.ivy.parkinglot.entity.ParkingLot;
+import com.oocl.ita.ivy.parkinglot.entity.ParkingOrder;
 import com.oocl.ita.ivy.parkinglot.entity.User;
 import com.oocl.ita.ivy.parkinglot.entity.enums.BusinessExceptionType;
 import com.oocl.ita.ivy.parkinglot.entity.enums.Role;
@@ -75,6 +76,7 @@ public class ParkingBoyService implements BaseService<ParkingBoy, String> {
         return parkingBoyRepository.save(parkingBoy);
     }
 
+
     public ParkingBoy getCurrentParkingBoy() {
         Integer id = userOperator.getUser().getId();
         return findByUserId(id);
@@ -82,6 +84,11 @@ public class ParkingBoyService implements BaseService<ParkingBoy, String> {
 
     private ParkingBoy findByUserId(Integer id) {
         return parkingBoyRepository.findParkingBoyByUserId(id);
+    }
+
+
+    public ParkingBoy getParkingBoyInSomeStatus(String status){
+        return parkingBoyRepository.getParkingBoyInSomeStatus(status);
     }
 
 }
