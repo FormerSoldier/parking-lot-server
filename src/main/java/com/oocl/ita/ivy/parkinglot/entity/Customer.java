@@ -1,10 +1,14 @@
 package com.oocl.ita.ivy.parkinglot.entity;
 
 import lombok.Data;
+import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.GenericGenerator;
+import org.hibernate.annotations.UpdateTimestamp;
+import org.springframework.data.annotation.CreatedDate;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
+import java.util.Date;
 
 @Entity
 @Data
@@ -28,6 +32,13 @@ public class Customer {
     @JoinColumn(name = "user_id")
     private User user;
 
+    @Column
+    @CreationTimestamp
+    private Date createTime;
+
+    @Column
+    @UpdateTimestamp
+    private Date updateTime;
 
     @Override
     public String toString() {

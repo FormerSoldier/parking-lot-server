@@ -1,6 +1,7 @@
 package com.oocl.ita.ivy.parkinglot.controller;
 
 import com.oocl.ita.ivy.parkinglot.entity.ParkingBoy;
+import com.oocl.ita.ivy.parkinglot.entity.ParkingBoyVo;
 import com.oocl.ita.ivy.parkinglot.entity.ParkingLot;
 import com.oocl.ita.ivy.parkinglot.entity.ParkingOrder;
 import com.oocl.ita.ivy.parkinglot.entity.enums.BusinessExceptionType;
@@ -72,6 +73,10 @@ public class ParkingBoyController implements BaseController<ParkingBoy, String> 
         return parkingBoyService.getCurrentParkingBoy();
     }
 
+    @PutMapping("/{id}/parking-status")
+    public ParkingBoy changeParkingBoyStatus(@PathVariable String id){
+        return  parkingBoyService.changeParkingBoyStatus(id);
+    }
 
 
 
