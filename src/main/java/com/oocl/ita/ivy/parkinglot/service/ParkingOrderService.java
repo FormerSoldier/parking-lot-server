@@ -1,20 +1,19 @@
 package com.oocl.ita.ivy.parkinglot.service;
 
-import com.oocl.ita.ivy.parkinglot.entity.Customer;
+import com.oocl.ita.ivy.parkinglot.entity.*;
 
-import com.oocl.ita.ivy.parkinglot.entity.ParkingBoy;
-import com.oocl.ita.ivy.parkinglot.entity.ParkingBoyDTO;
-import com.oocl.ita.ivy.parkinglot.entity.ParkingOrder;
 import com.oocl.ita.ivy.parkinglot.entity.enums.BusinessExceptionType;
 import com.oocl.ita.ivy.parkinglot.entity.enums.OrderStatus;
 import com.oocl.ita.ivy.parkinglot.entity.enums.ParkingBoyStatus;
 import com.oocl.ita.ivy.parkinglot.exception.BusinessException;
 import com.oocl.ita.ivy.parkinglot.repository.CustomerRepository;
+import com.oocl.ita.ivy.parkinglot.repository.ParkingLotRepository;
 import com.oocl.ita.ivy.parkinglot.repository.ParkingOrderRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
+import java.util.List;
 
 @Service
 public class ParkingOrderService {
@@ -25,6 +24,8 @@ public class ParkingOrderService {
     private CustomerRepository customerRepository;
     @Autowired
     private ParkingBoyService parkingBoyService;
+    @Autowired
+    private ParkingLotRepository parkingLotRepository;
 
 
     public ParkingOrder save(String customerUsername, String carNo) {
@@ -52,14 +53,28 @@ public class ParkingOrderService {
         if(parkingBoy == null)
             return null;
         parkingOrder.setOrderStatus(OrderStatus.PARK);
-        parkingOrder.setParkingBoy(parkingBoy);
+        parkingOrder.setParkParkingBoy(parkingBoy);
         parkingOrder.setParkingLot(parkingBoy.getParkingLotList().get(0));
         parkingOrder.setStartTime(new Date());
 
         return orderRepository.save(parkingOrder);
     }
 
+    public ParkingOrder CustomerFetch(ParkingOrder parkingOrder) throws Exception {
+        ParkingLot parkingLot = parkingOrder.getParkingLot();
+        List<ParkingBoy> parkingBoyList = parkingBoyService.getParkingBoyByParkingLot(parkingLot.getId(), String.valueOf(ParkingBoyStatus.OPEN));
+        if (parkingBoyList.size() == 0) {
+            parkingBoyList = parkingBoyService.getParkingBoyByParkingLot(parkingLot.getId(), String.valueOf(ParkingBoyStatus.STOP));
+        }
+        if (parkingBoyList.size() == 0) {
+            return null;
+        }
 
+        parkingOrder.setOrderStatus(OrderStatus.PAID);
+        parkingOrder.setFetchParkingBoy(parkingBoyList.get(0));
+        parkingOrder.setEndTime(new Date());
 
+        return orderRepository.save(parkingOrder);
+    }
 
 }

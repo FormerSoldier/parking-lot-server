@@ -91,4 +91,8 @@ public class ParkingBoyService implements BaseService<ParkingBoy, String> {
         return parkingBoyRepository.getParkingBoyInSomeStatus(status);
     }
 
+    public List<ParkingBoy> getParkingBoyByParkingLot(String id, String status) {
+        return parkingBoyRepository.getParkingBoyByParkingLot(id, status);
+    }
+
 }
