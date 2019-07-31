@@ -15,9 +15,11 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Random;
 import java.util.stream.Collectors;
 
 @Service
@@ -100,7 +102,7 @@ public class ParkingOrderService {
         parkingOrder.setParkingLot(parkingBoy.getParkingLotList().get(0));
 
         Integer userId = parkingOrder.getCustomer().getUser().getId();
-        String number = new Date().getTime() + Math.random() * 10000 + "" + userId;
+        String number = new SimpleDateFormat("yyyyMMddHH").format(new Date()) + new Random().nextInt(1000) + userId;
         parkingOrder.setNumber(number);
 
         parkingOrder.setStartTime(new Date());
