@@ -47,8 +47,6 @@ public class ParkingOrderController {
 
     @GetMapping("/parking-boys/orders")
     public List<ParkingBoyVo> getAllParkingBoyVo(){
-
-        System.out.println("asdasdasdasdasdasdasdasdasdasdasd");
         return orderService.getMySelfAllOrders();
     }
 
