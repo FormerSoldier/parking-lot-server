@@ -101,7 +101,7 @@ public class ParkingOrderService {
         parkingOrder.setParkingLot(parkingBoy.getParkingLotList().get(0));
 
         Integer userId = parkingOrder.getCustomer().getUser().getId();
-        String number = new Date().getTime() + Math.random() * 10000 + "" + userId;
+        String number = new Date().getTime() + userId + "";
         parkingOrder.setNumber(number);
 
         parkingOrder.setStartTime(new Date());
@@ -186,7 +186,7 @@ public class ParkingOrderService {
                 parkingBoyVo.setSubmitTime(parkingOrder.getSubmitTime());
                 parkingBoyVo.setParkingLotName(parkingLot.getName());
                 parkingBoyVo.setFetchTime(parkingOrder.getFetchTime());
-                parkingBoyVo.setParkParkingBoyName(parkParkingBoy == null ? null : parkParkingBoy.getName());
+                parkingBoyVo.setParkParkingBoyName(parkParkingBoy == null ? "" : parkParkingBoy.getName());
                 parkingBoyVo.setFetchParkingBoyName(fetchParkingBoy == null ? null : fetchParkingBoy.getName());
                 parkingBoyVo.setOrderStatus(parkingOrder.getOrderStatus());
                 result.add(parkingBoyVo);
@@ -206,7 +206,6 @@ public class ParkingOrderService {
         parkOrders.sort(Comparator.comparing(o -> o.getSubmitTime().toString()));
         return parkOrders;
     }
-
 
 
     public Page<ParkingOrder> findAll(Pageable pageable) {
