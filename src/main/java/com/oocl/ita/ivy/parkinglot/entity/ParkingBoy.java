@@ -67,6 +67,8 @@ public class ParkingBoy {
     @OneToMany
     private List<ParkingBoy> parkingBoys;
 
+    private double salary;
+
     @JsonIgnore
     public boolean hasFreeParkingLot(){
         if(parkingLotList == null || parkingLotList.size() == 0){
