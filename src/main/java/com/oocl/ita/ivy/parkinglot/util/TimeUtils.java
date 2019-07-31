@@ -10,6 +10,6 @@ public class TimeUtils {
         long time = endDate.getTime() - startDate.getTime();
         long second = time / millisecond_to_second_unit;
         long minute = second / second_to_minute_unit;
-        return minute / millisecond_to_second_unit;
+        return minute / minute_to_hour_unit;
     }
 }
