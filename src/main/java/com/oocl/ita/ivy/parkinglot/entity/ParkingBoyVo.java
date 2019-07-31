@@ -11,6 +11,7 @@ public class ParkingBoyVo {
     private String username;
     private String phone;
     private String carNo;
+    private String number;
     private double price;
     private Date submitTime;
     private String parkingLotName;
