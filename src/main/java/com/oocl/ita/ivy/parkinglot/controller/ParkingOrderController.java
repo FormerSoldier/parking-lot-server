@@ -54,4 +54,14 @@ public class ParkingOrderController {
     public Page<ParkingOrder> parkingOrders(@PageableDefault(size = 15) Pageable pageable){
         return orderService.findAll(pageable);
     }
+
+    /*@PostMapping("/parkingboy/park")
+    public ParkingBoyVo parkingboyPark(@RequestBody String orderId){
+
+    }
+
+    @PostMapping("/parkingboy/fetch")
+    public ParkingBoyVo parkingboyFetch(@RequestBody String orderId){
+
+    }*/
 }

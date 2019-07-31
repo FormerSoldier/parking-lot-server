@@ -20,6 +20,8 @@ import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.stream.Collectors;
 
+import static com.oocl.ita.ivy.parkinglot.entity.enums.BusinessExceptionType.RECODE_NOT_FOUNT;
+
 @Service
 public class ParkingOrderService {
 
@@ -37,6 +39,8 @@ public class ParkingOrderService {
     private ParkingBoyRepository parkingBoyRepository;
     @Autowired
     private CustomerService customerService;
+    @Autowired
+    private ExpenseRateService expenseRateService;
 
 
 //    public ParkingOrder save(String customerUsername, String carNo) {
@@ -57,7 +61,7 @@ public class ParkingOrderService {
     public ParkingOrder customerPark(String customerUsername, String carNo) throws BusinessException {
         Customer customer = customerRepository.findByUsername(customerUsername);
         if (customer == null) {
-            throw new BusinessException(BusinessExceptionType.RECODE_NOT_FOUNT);
+            throw new BusinessException(RECODE_NOT_FOUNT);
         }
 
         ParkingOrder parkingOrder = new ParkingOrder();
@@ -110,7 +114,7 @@ public class ParkingOrderService {
 
 
     public ParkingOrder customerFetch(String fetchId) throws Exception {
-        ParkingOrder parkingOrder = orderRepository.findById(fetchId).orElseThrow(() -> new BusinessException(BusinessExceptionType.RECODE_NOT_FOUNT));
+        ParkingOrder parkingOrder = orderRepository.findById(fetchId).orElseThrow(() -> new BusinessException(RECODE_NOT_FOUNT));
         ParkingLot parkingLot = parkingOrder.getParkingLot();
         List<ParkingBoy> parkingBoyList = parkingBoyService.getParkingBoyByParkingLot(parkingLot.getId(), String.valueOf(ParkingBoyStatus.OPEN));
         if (parkingBoyList.size() == 0) {
@@ -124,7 +128,7 @@ public class ParkingOrderService {
         parkingOrder.setFetchParkingBoy(parkingBoyList.get(0));
         parkingOrder.setEndTime(new Date());
 
-        int rate = 1;
+        double rate = expenseRateService.getExpenseRate().getExpenseRate();
         long diffHour = TimeUtils.getTwoDateDiffHours(parkingOrder.getStartTime(), parkingOrder.getEndTime());
         parkingOrder.setPrice(rate * diffHour);
         parkingLot.setUsedCapacity(parkingLot.getUsedCapacity()-1);
@@ -216,8 +220,16 @@ public class ParkingOrderService {
     }
 
     public ParkingOrder findById(String id) {
-        return orderRepository.findById(id).orElseThrow(() -> new BusinessException(BusinessExceptionType.RECODE_NOT_FOUNT));
+        return orderRepository.findById(id).orElseThrow(() -> new BusinessException(RECODE_NOT_FOUNT));
     }
+
+
+   /* public ParkingBoyVo parkingboyPark(String orderId){
+        ParkingOrder parkingOrder = orderRepository.findById(orderId).orElseThrow(() ->new BusinessException(RECODE_NOT_FOUNT));
+
+    }*/
+
+
 
     public ParkingOrder processingCondition(ParkingOrder parkingOrder, OrderStatus status){
         parkingOrder.setOrderStatus(status);

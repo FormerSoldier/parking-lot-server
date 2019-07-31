@@ -1,10 +1,7 @@
 package com.oocl.ita.ivy.parkinglot.service;
 
 import com.itmuch.lightsecurity.jwt.UserOperator;
-import com.oocl.ita.ivy.parkinglot.entity.ParkingBoy;
-import com.oocl.ita.ivy.parkinglot.entity.ParkingLot;
-import com.oocl.ita.ivy.parkinglot.entity.ParkingOrder;
-import com.oocl.ita.ivy.parkinglot.entity.User;
+import com.oocl.ita.ivy.parkinglot.entity.*;
 import com.oocl.ita.ivy.parkinglot.entity.enums.BusinessExceptionType;
 import com.oocl.ita.ivy.parkinglot.entity.enums.ParkingBoyStatus;
 import com.oocl.ita.ivy.parkinglot.entity.enums.Role;
@@ -129,6 +126,5 @@ public class ParkingBoyService implements BaseService<ParkingBoy, String> {
         manager.setParkingBoys(null);
         return parkingBoyRepository.save(manager);
     }
-
 
 }
