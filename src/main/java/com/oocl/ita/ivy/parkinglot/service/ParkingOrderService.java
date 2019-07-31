@@ -15,10 +15,12 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
+import java.util.Random;
 import java.util.stream.Collectors;
 
 @Service
@@ -101,7 +103,7 @@ public class ParkingOrderService {
         parkingOrder.setParkingLot(parkingBoy.getParkingLotList().get(0));
 
         Integer userId = parkingOrder.getCustomer().getUser().getId();
-        String number = new Date().getTime() + userId + "";
+        String number = new SimpleDateFormat("yyyyMMddHH").format(new Date()) + new Random().nextInt(1000) + userId;
         parkingOrder.setNumber(number);
 
         parkingOrder.setStartTime(new Date());
@@ -144,7 +146,8 @@ public class ParkingOrderService {
 
                 parkingBoyVo = new ParkingBoyVo();
 
-                parkingBoyVo.setOrderId(parkingOrder.getId());
+                //parkingBoyVo.setOrderId(parkingOrder.getId());
+                parkingBoyVo.setOrderId(parkingOrder.getNumber());
                 parkingBoyVo.setUsername(user.getName());
                 parkingBoyVo.setPhone(customer.getPhone());
                 parkingBoyVo.setCarNo(parkingOrder.getCarNo());
@@ -178,7 +181,8 @@ public class ParkingOrderService {
 
                 parkingBoyVo = new ParkingBoyVo();
 
-                parkingBoyVo.setOrderId(parkingOrder.getId());
+//                parkingBoyVo.setOrderId(parkingOrder.getId());
+                parkingBoyVo.setOrderId(parkingOrder.getNumber());
                 parkingBoyVo.setUsername(user.getName());
                 parkingBoyVo.setPhone(customer.getPhone());
                 parkingBoyVo.setCarNo(parkingOrder.getCarNo());
@@ -199,10 +203,8 @@ public class ParkingOrderService {
     public List<ParkingBoyVo> getMySelfAllOrders() {
         List<ParkingBoyVo> parkOrders = getMySelfParkOrders();
         List<ParkingBoyVo> fetchOrders = getMySelfFetchOrder();
-
-        int i = 0;
-        int j = 0;
-        parkOrders.addAll(fetchOrders);
+        List<ParkingBoyVo> temp = parkOrders.stream().filter((item) -> !fetchOrders.contains(item)).collect(Collectors.toList());
+        fetchOrders.addAll(temp);
         parkOrders.sort(Comparator.comparing(o -> o.getSubmitTime().toString()));
         return parkOrders;
     }
