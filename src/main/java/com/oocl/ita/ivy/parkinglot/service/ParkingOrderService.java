@@ -227,8 +227,7 @@ public class ParkingOrderService {
         parkingBoyVo.setOrderStatus(parkingOrder.getOrderStatus());
 
 
-        //ParkingBoy me = parkingBoyService.getCurrentParkingBoy();
-        ParkingBoy me = parkingBoyService.findById("297ed7b96c4616f7016c461bc9100001");
+        ParkingBoy me = parkingBoyService.getCurrentParkingBoy();
         ParkingLot parkingLot = parkingOrder.getParkingLot();
 
 
@@ -264,8 +263,7 @@ public class ParkingOrderService {
         parkingBoyVo.setOrderStatus(parkingOrder.getOrderStatus());
 
 
-        //ParkingBoy me = parkingBoyService.getCurrentParkingBoy();
-        ParkingBoy me = parkingBoyService.findById("297ed7b96c4616f7016c461bc9100001");
+        ParkingBoy me = parkingBoyService.getCurrentParkingBoy();
 
         ParkingLot parkingLot = parkingOrder.getParkingLot();
 
