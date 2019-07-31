@@ -48,6 +48,8 @@ public class ParkingBoy {
 
     private boolean free;
 
+    private int salary;
+
 
     @Column
     @CreationTimestamp
@@ -62,12 +64,4 @@ public class ParkingBoy {
     @UpdateTimestamp
     private Date updateTime;
 
-
-//    @JsonIgnore
-//    public boolean hasFreeParkingLot(){
-//        if(parkingLotList == null || parkingLotList.size() == 0){
-//            return false;
-//        }
-//        return parkingLotList.stream().anyMatch(parkingLot -> parkingLot.getCapacity() > parkingLot.getUsedCapacity());
-//    }
 }
