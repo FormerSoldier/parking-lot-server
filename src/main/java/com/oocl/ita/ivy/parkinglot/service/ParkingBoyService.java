@@ -130,4 +130,9 @@ public class ParkingBoyService implements BaseService<ParkingBoy, String> {
             return null;
         return manager.getParkingBoys();
     }
+
+    public List<ParkingBoy> getSubordinatesByUserId(Integer userId) {
+        ParkingBoy parkingBoy = Optional.of(parkingBoyRepository.findByUserId(userId)).orElseThrow(()->new BusinessException(BusinessExceptionType.RECODE_NOT_FOUNT));
+        return getSubordinatesByManagerId(parkingBoy.getId());
+    }
 }

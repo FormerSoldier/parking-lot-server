@@ -50,4 +50,6 @@ public interface ParkingBoyRepository extends JpaRepository<ParkingBoy, String> 
             "    INNER JOIN parking_boy" +
             "    ON parking_boys_table.parking_boy_id = parking_boy.id", nativeQuery = true)
     ParkingBoy findManagerBySubordinate(@Param("id") String id);
+
+    ParkingBoy findByUserId(Integer userId);
 }
