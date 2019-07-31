@@ -61,11 +61,14 @@ public class ParkingOrderController {
 
     @PostMapping("/parkingboy/park")
     public ParkingBoyVo parkingboyPark(@RequestBody String orderId){
+        orderId = orderId.substring(0,orderId.length()-1);
         return orderService.parkingBoyPark(orderId);
     }
 
     @PostMapping("/parkingboy/fetch")
     public ParkingBoyVo parkingboyFetch(@RequestBody String orderId){
+        //权衡之计，传输方式会对数据进行改变
+        orderId = orderId.substring(0,orderId.length()-1);
         return orderService.parkingBoyFetch(orderId);
     }
 }

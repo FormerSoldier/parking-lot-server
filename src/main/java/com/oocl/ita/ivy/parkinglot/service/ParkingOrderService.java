@@ -283,6 +283,7 @@ public class ParkingOrderService {
         diffHour = diffHour == 0 ? 1 : diffHour;
         parkingOrder.setPrice(rate * diffHour);
 
+        parkingBoyVo.setPrice(parkingOrder.getPrice());
         parkingBoyVo.setParkParkingBoyName(parkingOrder.getParkParkingBoy().getName());
         parkingBoyVo.setOrderStatus(parkingOrder.getOrderStatus());
         parkingBoyVo.setParkingLotName(parkingLot.getName());
