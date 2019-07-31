@@ -237,8 +237,21 @@ public class ParkingOrderService {
         ProgressingDataStore.dataStore.put(parkingOrder.getId(),parkingOrder);
         return parkingOrder;
     }
-//
-//    public List<ParkingOrder> getParkedAndFetchedByParkingBoysId (String id) {
-//
-//    }
+
+    //拿PB的订单
+    //不要问
+    //不准改
+    public ParkingBoyVo getProcessingOrderByParkingBoysId () {
+        List<ParkingBoyVo> parkOrder = getMySelfParkOrders();
+        List<ParkingBoyVo> fetchOrder = getMySelfFetchOrder();
+        if (parkOrder.stream().filter(parkingBoyVo -> parkingBoyVo.getOrderStatus().equals(OrderStatus.ACCEPT)).collect(Collectors.toList()).size() == 0) {
+            if (fetchOrder.stream().filter(parkingBoyVo -> parkingBoyVo.getOrderStatus().equals(OrderStatus.ACCEPT_FETCH)).collect(Collectors.toList()).size() == 0) {
+                return null;
+            } else {
+                return fetchOrder.stream().filter(parkingBoyVo -> parkingBoyVo.getOrderStatus().equals(OrderStatus.ACCEPT_FETCH)).collect(Collectors.toList()).get(0);
+            }
+        } else {
+            return parkOrder.stream().filter(parkingBoyVo -> parkingBoyVo.getOrderStatus().equals(OrderStatus.ACCEPT)).collect(Collectors.toList()).get(0);
+        }
+    }
 }

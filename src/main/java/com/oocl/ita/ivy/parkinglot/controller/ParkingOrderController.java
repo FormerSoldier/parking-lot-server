@@ -55,6 +55,11 @@ public class ParkingOrderController {
         return orderService.findAll(pageable);
     }
 
+    @GetMapping("/parkingboys/processingorders")
+    public ParkingBoyVo getProcessingOrderByParkingBoysId() {
+        return orderService.getProcessingOrderByParkingBoysId();
+    }
+
     /*@PostMapping("/parkingboy/park")
     public ParkingBoyVo parkingboyPark(@RequestBody String orderId){
 

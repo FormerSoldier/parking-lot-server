@@ -2,6 +2,7 @@ package com.oocl.ita.ivy.parkinglot.repository;
 
 
 import com.oocl.ita.ivy.parkinglot.entity.ParkingOrder;
+import com.oocl.ita.ivy.parkinglot.entity.enums.OrderStatus;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
