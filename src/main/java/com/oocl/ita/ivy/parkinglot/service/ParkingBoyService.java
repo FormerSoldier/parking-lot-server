@@ -19,6 +19,7 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class ParkingBoyService implements BaseService<ParkingBoy, String> {
@@ -34,7 +35,7 @@ public class ParkingBoyService implements BaseService<ParkingBoy, String> {
 
     @Override
     public ParkingBoy save(ParkingBoy parkingBoy) {
-        User user=userService.register(parkingBoy.getUser(), Role.PARKINGBOY);
+        User user = userService.register(parkingBoy.getUser(), Role.PARKINGBOY);
         parkingBoy.setUser(user);
         return parkingBoyRepository.save(parkingBoy);
     }
@@ -46,7 +47,7 @@ public class ParkingBoyService implements BaseService<ParkingBoy, String> {
 
     @Override
     public void deleteById(String s) {
-        ParkingBoy parkingBoy=parkingBoyRepository.findById(s).orElseThrow(() -> new BusinessException(BusinessExceptionType.RECODE_NOT_FOUNT));
+        ParkingBoy parkingBoy = parkingBoyRepository.findById(s).orElseThrow(() -> new BusinessException(BusinessExceptionType.RECODE_NOT_FOUNT));
         parkingBoy.getUser().setDeleteFlag(true);
         parkingBoyRepository.save(parkingBoy);
     }
@@ -63,17 +64,17 @@ public class ParkingBoyService implements BaseService<ParkingBoy, String> {
 
 
     public ParkingBoy setParkingLotsByID(String id, List<ParkingLot> parkingLots) {
-        ParkingBoy parkingBoy=parkingBoyRepository.findById(id).orElseThrow(() ->new BusinessException(BusinessExceptionType.RECODE_NOT_FOUNT));
+        ParkingBoy parkingBoy = parkingBoyRepository.findById(id).orElseThrow(() -> new BusinessException(BusinessExceptionType.RECODE_NOT_FOUNT));
         parkingBoy.setParkingLotList(parkingLots);
         return parkingBoyRepository.saveAndFlush(parkingBoy);
     }
 
     public List<ParkingLot> getParkingLotsByID(String id) {
-        return parkingBoyRepository.findById(id).orElseThrow(()->new BusinessException(BusinessExceptionType.RECODE_NOT_FOUNT)).getParkingLotList();
+        return parkingBoyRepository.findById(id).orElseThrow(() -> new BusinessException(BusinessExceptionType.RECODE_NOT_FOUNT)).getParkingLotList();
     }
 
     public ParkingBoy update(ParkingBoy parkingBoy) {
-        ParkingBoy oldParkingBoy=parkingBoyRepository.findById(parkingBoy.getId()).orElseThrow(() ->new BusinessException(BusinessExceptionType.RECODE_NOT_FOUNT));
+        ParkingBoy oldParkingBoy = parkingBoyRepository.findById(parkingBoy.getId()).orElseThrow(() -> new BusinessException(BusinessExceptionType.RECODE_NOT_FOUNT));
         parkingBoy.setUser(oldParkingBoy.getUser());
         return parkingBoyRepository.save(parkingBoy);
     }
@@ -89,7 +90,7 @@ public class ParkingBoyService implements BaseService<ParkingBoy, String> {
     }
 
 
-    public ParkingBoy getParkingBoyInSomeStatus(String status){
+    public ParkingBoy getParkingBoyInSomeStatus(String status) {
         return parkingBoyRepository.getParkingBoyInSomeStatus(status);
     }
 
@@ -98,13 +99,13 @@ public class ParkingBoyService implements BaseService<ParkingBoy, String> {
     }
 
     public ParkingBoy changeParkingBoyStatus(String id) {
-        ParkingBoy parkingBoy=parkingBoyRepository.findById(id).orElseThrow(()->new BusinessException(BusinessExceptionType.RECODE_NOT_FOUNT));
-        parkingBoy.setStatus(parkingBoy.getStatus()==ParkingBoyStatus.OPEN?ParkingBoyStatus.STOP:ParkingBoyStatus.OPEN);
+        ParkingBoy parkingBoy = parkingBoyRepository.findById(id).orElseThrow(() -> new BusinessException(BusinessExceptionType.RECODE_NOT_FOUNT));
+        parkingBoy.setStatus(parkingBoy.getStatus() == ParkingBoyStatus.OPEN ? ParkingBoyStatus.STOP : ParkingBoyStatus.OPEN);
         return parkingBoyRepository.save(parkingBoy);
     }
 
     public ParkingBoy upgradeToManager(String id) {
-        ParkingBoy manager = parkingBoyRepository.findById(id).orElseThrow(()->new BusinessException(BusinessExceptionType.RECODE_NOT_FOUNT));
+        ParkingBoy manager = parkingBoyRepository.findById(id).orElseThrow(() -> new BusinessException(BusinessExceptionType.RECODE_NOT_FOUNT));
         manager.setManager(true);
         ParkingBoy oldHeader = parkingBoyRepository.findManagerBySubordinate(manager.getId());
         if (oldHeader != null) {
@@ -115,20 +116,34 @@ public class ParkingBoyService implements BaseService<ParkingBoy, String> {
     }
 
     public ParkingBoy addParkingBoyForManager(String id, List<ParkingBoy> parkingBoys) {
-        ParkingBoy manager = parkingBoyRepository.findById(id).orElseThrow(()->new BusinessException(BusinessExceptionType.RECODE_NOT_FOUNT));
-        if (manager.getParkingBoys() != null)
-            manager.getParkingBoys().addAll(parkingBoys);
-        else
-            manager.setParkingBoys(parkingBoys);
-        return parkingBoyRepository.save(manager);
+        ParkingBoy manager = parkingBoyRepository.findById(id).orElseThrow(() -> new BusinessException(BusinessExceptionType.RECODE_NOT_FOUNT));
+        if (parkingBoys.size() == 0) {
+            manager.setParkingBoys(null);
+            return parkingBoyRepository.saveAndFlush(manager);
+        } else {
+            List<ParkingBoy> chooseBoys = new ArrayList<>();
+            for (ParkingBoy item : parkingBoys) {
+                chooseBoys.add(parkingBoyRepository.findById(item.getId()).orElseThrow(() -> new BusinessException(BusinessExceptionType.RECODE_NOT_FOUNT)));
+            }
+            manager.setParkingBoys(chooseBoys);
+            return parkingBoyRepository.saveAndFlush(manager);
+        }
     }
 
     public ParkingBoy degradeToParkingBoy(String id) {
-        ParkingBoy manager = parkingBoyRepository.findById(id).orElseThrow(()->new BusinessException(BusinessExceptionType.RECODE_NOT_FOUNT));
+        ParkingBoy manager = parkingBoyRepository.findById(id).orElseThrow(() -> new BusinessException(BusinessExceptionType.RECODE_NOT_FOUNT));
         manager.setManager(false);
         manager.setParkingBoys(null);
         return parkingBoyRepository.save(manager);
     }
 
 
+    public List<ParkingBoy> findLowerParkingBoy() {
+//        List<ParkingBoy> chooseParkingBoysLists = parkingBoyRepository.findNotInManagedParkingBoy();
+//        if (chooseParkingBoysLists.size() != 0) {
+//            chooseParkingBoysLists = chooseParkingBoysLists.stream().filter(item -> !item.isManager()).collect(Collectors.toList());
+//        }
+//        return chooseParkingBoysLists;
+        return parkingBoyRepository.findAll().stream().filter(it->!it.isManager()).collect(Collectors.toList());
+    }
 }

@@ -78,18 +78,25 @@ public class ParkingBoyController implements BaseController<ParkingBoy, String> 
         return parkingBoyService.changeParkingBoyStatus(id);
     }
 
-    @PostMapping("/{id}/upgrade")
+    @PutMapping("/{id}/upgrade")
     public ParkingBoy upgradeToManager(@PathVariable String id) {
         return parkingBoyService.upgradeToManager(id);
     }
 
-    @PostMapping("/{id}/degrade")
+    @PutMapping("/{id}/degrade")
     public ParkingBoy degradeToParkingBoy(@PathVariable String id) {
         return parkingBoyService.degradeToParkingBoy(id);
     }
 
-    @PostMapping("/{id}/parking-boys")
+    @PutMapping("/{id}/parking-boys")
     public ParkingBoy setParkingBoys(@PathVariable String id, @RequestBody List<ParkingBoy> parkingBoys) {
         return parkingBoyService.addParkingBoyForManager(id, parkingBoys);
     }
+
+
+    @GetMapping("/findLowerParkingBoy")
+    public List<ParkingBoy> parkingBoys(){
+        return parkingBoyService.findLowerParkingBoy();
+    }
+
 }
