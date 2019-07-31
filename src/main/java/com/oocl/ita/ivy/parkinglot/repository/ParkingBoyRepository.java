@@ -34,7 +34,7 @@ public interface ParkingBoyRepository extends JpaRepository<ParkingBoy, String> 
     ParkingBoy findParkingBoyByUserId(Integer id);
 
 
-    @Query(value = "SELECT *  FROM (SELECT * FROM parking_boy_parking_lot_list AS pbpll" +
+    @Query(value = "SELECT * FROM (SELECT * FROM parking_boy_parking_lot_list AS pbpll" +
             "    WHERE parking_lot_list_id = :id" +
             ") AS parking_boy_table" +
             "    INNER JOIN parking_boy" +
@@ -43,4 +43,11 @@ public interface ParkingBoyRepository extends JpaRepository<ParkingBoy, String> 
     List<ParkingBoy> getParkingBoyByParkingLot(@Param("id") String id, @Param("status") String status);
 
     List<ParkingBoy> findAllByStatus(ParkingBoyStatus status);
+
+    @Query(value = "SELECT * FROM (SELECT * FROM parking_boy_parking_boys AS pbpbs" +
+            "    WHERE pbpbs.parking_boys_id = :id" +
+            ")   AS parking_boys_table" +
+            "    INNER JOIN parking_boy" +
+            "    ON parking_boys_table.parking_boy_id = parking_boy.id", nativeQuery = true)
+    ParkingBoy findManagerBySubordinate(@Param("id") String id);
 }
