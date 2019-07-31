@@ -1,6 +1,5 @@
 package com.oocl.ita.ivy.parkinglot.exception;
 
-import com.oocl.ita.ivy.parkinglot.entity.enums.BusinessExceptionType;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
