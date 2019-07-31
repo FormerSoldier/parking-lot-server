@@ -63,11 +63,11 @@ public class ParkingBoy {
     private Date updateTime;
 
 
-    @JsonIgnore
-    public boolean hasFreeParkingLot(){
-        if(parkingLotList == null || parkingLotList.size() == 0){
-            return false;
-        }
-        return parkingLotList.stream().anyMatch(parkingLot -> parkingLot.getCapacity() > parkingLot.getUsedCapacity());
-    }
+//    @JsonIgnore
+//    public boolean hasFreeParkingLot(){
+//        if(parkingLotList == null || parkingLotList.size() == 0){
+//            return false;
+//        }
+//        return parkingLotList.stream().anyMatch(parkingLot -> parkingLot.getCapacity() > parkingLot.getUsedCapacity());
+//    }
 }

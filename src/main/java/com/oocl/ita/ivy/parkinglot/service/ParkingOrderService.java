@@ -10,17 +10,14 @@ import com.oocl.ita.ivy.parkinglot.repository.CustomerRepository;
 import com.oocl.ita.ivy.parkinglot.repository.ParkingBoyRepository;
 import com.oocl.ita.ivy.parkinglot.repository.ParkingLotRepository;
 import com.oocl.ita.ivy.parkinglot.repository.ParkingOrderRepository;
+import com.oocl.ita.ivy.parkinglot.util.TimeUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.Date;
-import java.util.List;
-import java.util.Random;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -64,15 +61,16 @@ public class ParkingOrderService {
          * 3.没有就返回
          **/
         ParkingBoy parkingBoy = parkingBoyService.getParkingBoyInSomeStatus(ParkingBoyStatus.OPEN.getStatus());
-//        List<ParkingBoy> OpenedAndHasFreePlaceParkingBoyList = parkingBoyRepository.findAllByStatus(ParkingBoyStatus.OPEN)
-//                .stream()
-//                .filter(ParkingBoy::hasFreeParkingLot).collect(Collectors.toList());
 
-        if (parkingBoy == null)
+        if (parkingBoy == null){
             parkingBoy = parkingBoyService.getParkingBoyInSomeStatus(ParkingBoyStatus.STOP.getStatus());
-
+            parkingBoy.setOrderNumInClose(parkingBoy.getOrderNumInClose()+1);
+        }else{
+            parkingBoy.setOrderNumInOpen(parkingBoy.getOrderNumInOpen()+1);
+        }
         if (parkingBoy == null) {
             throw new BusinessException(BusinessExceptionType.PARKING_LOT_NOT_AVAILABLE);
+
         }
 
         //找到第一个为有位置的parking_lot
@@ -86,21 +84,10 @@ public class ParkingOrderService {
             }
         }
         //将parking_lot的used_capacity+1
-        System.out.println(validParkingLot);
-        parkingLotService.addUsedCapacity(validParkingLot.getId());
-
-        validParkingLot = parkingLotService.findById(validParkingLot.getId());
-        parkingBoy = parkingBoyService.findById(parkingBoy.getId());
+        validParkingLot.setUsedCapacity(validParkingLot.getUsedCapacity()+1);
+        parkingOrder.setParkParkingBoy(parkingBoy);
         parkingOrder.setParkingLot(validParkingLot);
-        parkingOrder.setParkParkingBoy(parkingBoy);
-        if (parkingBoy == null) {
-            parkingOrder.setOrderStatus(OrderStatus.PROGRESSING);
-        } else {
-            parkingOrder.setOrderStatus(OrderStatus.PARK);
-        }
 
-        parkingOrder.setParkParkingBoy(parkingBoy);
-        parkingOrder.setParkingLot(parkingBoy.getParkingLotList().get(0));
 
         Integer userId = parkingOrder.getCustomer().getUser().getId();
         String number = new SimpleDateFormat("yyyyMMddHH").format(new Date()) + new Random().nextInt(1000) + userId;
@@ -122,11 +109,13 @@ public class ParkingOrderService {
         if (parkingBoyList.size() == 0) {
             return null;
         }
-
         parkingOrder.setOrderStatus(OrderStatus.PAID);
         parkingOrder.setFetchParkingBoy(parkingBoyList.get(0));
         parkingOrder.setEndTime(new Date());
 
+        int rate = 1;
+        long diffHour = TimeUtils.getTwoDateDiffHours(parkingOrder.getStartTime(), parkingOrder.getEndTime());
+        parkingOrder.setPrice(rate * diffHour);
         return orderRepository.save(parkingOrder);
     }
 
@@ -208,7 +197,6 @@ public class ParkingOrderService {
         parkOrders.sort(Comparator.comparing(o -> o.getSubmitTime().toString()));
         return parkOrders;
     }
-
 
     public Page<ParkingOrder> findAll(Pageable pageable) {
         return orderRepository.findAll(pageable);
