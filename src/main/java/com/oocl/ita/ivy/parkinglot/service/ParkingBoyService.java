@@ -113,10 +113,7 @@ public class ParkingBoyService implements BaseService<ParkingBoy, String> {
 
     public ParkingBoy addParkingBoyForManager(String id, List<ParkingBoy> parkingBoys) {
         ParkingBoy manager = parkingBoyRepository.findById(id).orElseThrow(()->new BusinessException(BusinessExceptionType.RECODE_NOT_FOUNT));
-        if (manager.getParkingBoys() != null)
-            manager.getParkingBoys().addAll(parkingBoys);
-        else
-            manager.setParkingBoys(parkingBoys);
+        manager.setParkingBoys(parkingBoys);
         return parkingBoyRepository.save(manager);
     }
 
@@ -127,4 +124,10 @@ public class ParkingBoyService implements BaseService<ParkingBoy, String> {
         return parkingBoyRepository.save(manager);
     }
 
+    public List<ParkingBoy> getSubordinatesByManagerId(String managerId) {
+        ParkingBoy manager = parkingBoyRepository.findById(managerId).orElseThrow(()->new BusinessException(BusinessExceptionType.RECODE_NOT_FOUNT));
+        if (manager.getParkingBoys() == null)
+            return null;
+        return manager.getParkingBoys();
+    }
 }
