@@ -69,6 +69,14 @@ public class ParkingBoy {
 
     private double salary;
 
+    public boolean isManager() {
+        return isManager;
+    }
+
+    public void setManager(boolean manager) {
+        isManager = manager;
+    }
+
     @JsonIgnore
     public boolean hasFreeParkingLot(){
         if(parkingLotList == null || parkingLotList.size() == 0){
