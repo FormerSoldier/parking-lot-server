@@ -55,13 +55,13 @@ public class ParkingOrderController {
         return orderService.findAll(pageable);
     }
 
-    /*@PostMapping("/parkingboy/park")
+    @PostMapping("/parkingboy/park")
     public ParkingBoyVo parkingboyPark(@RequestBody String orderId){
-
+        return orderService.parkingBoyPark(orderId);
     }
 
     @PostMapping("/parkingboy/fetch")
     public ParkingBoyVo parkingboyFetch(@RequestBody String orderId){
-
-    }*/
+        return orderService.parkingBoyFetch(orderId);
+    }
 }

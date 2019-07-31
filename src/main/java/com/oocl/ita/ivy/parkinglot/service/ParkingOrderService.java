@@ -42,32 +42,12 @@ public class ParkingOrderService {
     @Autowired
     private ExpenseRateService expenseRateService;
 
-
-//    public ParkingOrder save(String customerUsername, String carNo) {
-//        Customer customer = customerRepository.findByUsername(customerUsername);
-//        if (customer == null) {
-//            throw new BusinessException(BusinessExceptionType.RECODE_NOT_FOUNT);
-//        }
-//        ParkingOrder parkingOrder = new ParkingOrder();
-//        parkingOrder.setCarNo(carNo);
-//        parkingOrder.setCustomer(customer);
-//        parkingOrder.setSubmitTime(new Date());
-//        parkingOrder.setOrderStatus();
-//        return orderRepository.save(parkingOrder);
-//    }
-
-
-
     public ParkingOrder customerPark(String customerUsername, String carNo) throws BusinessException {
         Customer customer = customerRepository.findByUsername(customerUsername);
         if (customer == null) {
             throw new BusinessException(RECODE_NOT_FOUNT);
         }
 
-        ParkingOrder parkingOrder = new ParkingOrder();
-        parkingOrder.setCarNo(carNo);
-        parkingOrder.setCustomer(customer);
-        parkingOrder.setSubmitTime(new Date());
         /*
          * 1.先把订单分配给有停车空位，并且是open的parkingboy列表随机一个
          * 2.如果没有open的，就把订单给stop的parkingboy列表随机一个
@@ -79,12 +59,18 @@ public class ParkingOrderService {
             parkingBoy = parkingBoyService.getParkingBoyInSomeStatus(ParkingBoyStatus.STOP.getStatus());
             if(parkingBoy == null) {
                 //订单设置为待处理,并保存到数据库和暂存区中
-                return processingCondition(parkingOrder, OrderStatus.PROGRESSING);
+                throw new BusinessException(BusinessExceptionType.PARKING_BOY_NOT_AVAILABLE);
+//                return processingCondition(parkingOrder, OrderStatus.PROGRESSING);
             }
             parkingBoy.setOrderNumInClose(parkingBoy.getOrderNumInClose()+1);
         }else{
             parkingBoy.setOrderNumInOpen(parkingBoy.getOrderNumInOpen()+1);
         }
+        ParkingOrder parkingOrder = new ParkingOrder();
+        parkingOrder.setCarNo(carNo);
+        parkingOrder.setCustomer(customer);
+        parkingOrder.setSubmitTime(new Date());
+
 
         //找到第一个为有位置的parking_lot
         ParkingLot validParkingLot = null;
@@ -108,6 +94,9 @@ public class ParkingOrderService {
         parkingOrder.setNumber(number);
 
         parkingOrder.setStartTime(new Date());
+        //设置pb为忙
+        parkingBoy.setFree(false);
+
 
         return orderRepository.save(parkingOrder);
     }
@@ -121,17 +110,14 @@ public class ParkingOrderService {
             parkingBoyList = parkingBoyService.getParkingBoyByParkingLot(parkingLot.getId(), String.valueOf(ParkingBoyStatus.STOP));
         }
         if (parkingBoyList.size() == 0) {
+            throw new BusinessException(BusinessExceptionType.PARKING_BOY_NOT_AVAILABLE);
             // 如果该停车场中，没有空闲的parkingboy，那么修改订单为待取车
-            return processingCondition(parkingOrder, OrderStatus.FETCHING);
+            //return processingCondition(parkingOrder, OrderStatus.FETCHING);
         }
-        parkingOrder.setOrderStatus(OrderStatus.ACCEPT_FETCH);
+        parkingOrder.setOrderStatus(OrderStatus.FETCHING);
         parkingOrder.setFetchParkingBoy(parkingBoyList.get(0));
-        parkingOrder.setEndTime(new Date());
 
-        double rate = expenseRateService.getExpenseRate().getExpenseRate();
-        long diffHour = TimeUtils.getTwoDateDiffHours(parkingOrder.getStartTime(), parkingOrder.getEndTime());
-        parkingOrder.setPrice(rate * diffHour);
-        parkingLot.setUsedCapacity(parkingLot.getUsedCapacity()-1);
+        parkingBoyList.get(0).setFree(false);
 
         return orderRepository.save(parkingOrder);
     }
@@ -224,12 +210,90 @@ public class ParkingOrderService {
     }
 
 
-   /* public ParkingBoyVo parkingboyPark(String orderId){
+    public ParkingBoyVo parkingBoyPark(String orderId){
+
         ParkingOrder parkingOrder = orderRepository.findById(orderId).orElseThrow(() ->new BusinessException(RECODE_NOT_FOUNT));
+        User user = parkingOrder.getCustomer().getUser();
+        Customer customer = parkingOrder.getCustomer();
 
-    }*/
+        ParkingBoyVo parkingBoyVo = new ParkingBoyVo();
+
+        parkingBoyVo.setOrderId(parkingOrder.getId());
+        parkingBoyVo.setNumber(parkingOrder.getNumber());
+        parkingBoyVo.setUsername(user.getName());
+        parkingBoyVo.setPhone(customer.getPhone());
+        parkingBoyVo.setCarNo(parkingOrder.getCarNo());
+        parkingBoyVo.setSubmitTime(parkingOrder.getSubmitTime());
+        parkingBoyVo.setOrderStatus(parkingOrder.getOrderStatus());
 
 
+        //ParkingBoy me = parkingBoyService.getCurrentParkingBoy();
+        ParkingBoy me = parkingBoyService.findById("297ed7b96c4616f7016c461bc9100001");
+        ParkingLot parkingLot = parkingOrder.getParkingLot();
+
+
+        parkingOrder.setStartTime(new Date());
+        parkingOrder.setOrderStatus(OrderStatus.PARK);
+        me.setFree(true);
+        //这里再调用系统自动指派订单
+
+        parkingBoyVo.setParkParkingBoyName(me.getName());
+        parkingBoyVo.setOrderStatus(parkingOrder.getOrderStatus());
+        parkingBoyVo.setParkingLotName(parkingLot.getName());
+        parkingBoyVo.setFetchParkingBoyName("");
+
+        orderRepository.save(parkingOrder);
+        return parkingBoyVo;
+    }
+
+
+    public ParkingBoyVo parkingBoyFetch(String orderId){
+
+        ParkingOrder parkingOrder = orderRepository.findById(orderId).orElseThrow(() ->new BusinessException(RECODE_NOT_FOUNT));
+        User user = parkingOrder.getCustomer().getUser();
+        Customer customer = parkingOrder.getCustomer();
+
+        ParkingBoyVo parkingBoyVo = new ParkingBoyVo();
+
+        parkingBoyVo.setOrderId(parkingOrder.getId());
+        parkingBoyVo.setNumber(parkingOrder.getNumber());
+        parkingBoyVo.setUsername(user.getName());
+        parkingBoyVo.setPhone(customer.getPhone());
+        parkingBoyVo.setCarNo(parkingOrder.getCarNo());
+        parkingBoyVo.setSubmitTime(parkingOrder.getSubmitTime());
+        parkingBoyVo.setOrderStatus(parkingOrder.getOrderStatus());
+
+
+        //ParkingBoy me = parkingBoyService.getCurrentParkingBoy();
+        ParkingBoy me = parkingBoyService.findById("297ed7b96c4616f7016c461bc9100001");
+
+        ParkingLot parkingLot = parkingOrder.getParkingLot();
+
+        me.setFree(true);
+
+        // 调用系统指派订单
+
+        parkingLot.setUsedCapacity(parkingLot.getUsedCapacity()-1);
+
+
+        parkingOrder.setOrderStatus(OrderStatus.PAID);
+        parkingOrder.setFetchParkingBoy(me);
+        parkingOrder.setEndTime(new Date());
+
+        double rate = expenseRateService.getExpenseRate().getExpenseRate();
+        long diffHour = TimeUtils.getTwoDateDiffHours(parkingOrder.getStartTime(), parkingOrder.getEndTime());
+        diffHour = diffHour == 0 ? 1 : diffHour;
+        parkingOrder.setPrice(rate * diffHour);
+
+        parkingBoyVo.setParkParkingBoyName(parkingOrder.getParkParkingBoy().getName());
+        parkingBoyVo.setOrderStatus(parkingOrder.getOrderStatus());
+        parkingBoyVo.setParkingLotName(parkingLot.getName());
+        parkingBoyVo.setFetchParkingBoyName(me.getName());
+        parkingBoyVo.setFetchTime(parkingOrder.getEndTime());
+
+        orderRepository.save(parkingOrder);
+        return parkingBoyVo;
+    }
 
     public ParkingOrder processingCondition(ParkingOrder parkingOrder, OrderStatus status){
         parkingOrder.setOrderStatus(status);
