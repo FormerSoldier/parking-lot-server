@@ -305,6 +305,7 @@ public class ParkingOrderService {
     //拿PB的订单
     //不要问
     //不准改
+    //666
     public ParkingBoyVo getProcessingOrderByParkingBoysId () {
         List<ParkingBoyVo> parkOrder = getMySelfParkOrders();
         List<ParkingBoyVo> fetchOrder = getMySelfFetchOrder();
