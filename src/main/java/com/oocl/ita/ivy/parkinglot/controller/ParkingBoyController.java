@@ -59,7 +59,7 @@ public class ParkingBoyController implements BaseController<ParkingBoy, String> 
     }
 
     @PutMapping("/{id}/parking-lots")
-    public ParkingBoy setParkingLots(@PathVariable String id, @RequestBody  List<ParkingLot>parkingLots){
+    public ParkingBoy setParkingLots(@PathVariable String id, @RequestBody  List<ParkingLot> parkingLots){
         return parkingBoyService.setParkingLotsByID(id,parkingLots);
     }
 
@@ -75,9 +75,21 @@ public class ParkingBoyController implements BaseController<ParkingBoy, String> 
 
     @PutMapping("/{id}/parking-status")
     public ParkingBoy changeParkingBoyStatus(@PathVariable String id){
-        return  parkingBoyService.changeParkingBoyStatus(id);
+        return parkingBoyService.changeParkingBoyStatus(id);
     }
 
+    @PostMapping("/{id}/upgrade")
+    public ParkingBoy upgradeToManager(@PathVariable String id) {
+        return parkingBoyService.upgradeToManager(id);
+    }
 
+    @PostMapping("/{id}/degrade")
+    public ParkingBoy degradeToParkingBoy(@PathVariable String id) {
+        return parkingBoyService.degradeToParkingBoy(id);
+    }
 
+    @PostMapping("/{id}/parking-boys")
+    public ParkingBoy setParkingBoys(@PathVariable String id, @RequestBody List<ParkingBoy> parkingBoys) {
+        return parkingBoyService.addParkingBoyForManager(id, parkingBoys);
+    }
 }

@@ -62,6 +62,10 @@ public class ParkingBoy {
     @UpdateTimestamp
     private Date updateTime;
 
+    private boolean isManager;
+
+    @OneToMany
+    private List<ParkingBoy> parkingBoys;
 
     @JsonIgnore
     public boolean hasFreeParkingLot(){

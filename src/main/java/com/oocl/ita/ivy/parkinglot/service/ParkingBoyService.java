@@ -16,6 +16,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.expression.ExpressionException;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -101,4 +102,33 @@ public class ParkingBoyService implements BaseService<ParkingBoy, String> {
         parkingBoy.setStatus(parkingBoy.getStatus()==ParkingBoyStatus.OPEN?ParkingBoyStatus.STOP:ParkingBoyStatus.OPEN);
         return parkingBoyRepository.save(parkingBoy);
     }
+
+    public ParkingBoy upgradeToManager(String id) {
+        ParkingBoy manager = parkingBoyRepository.findById(id).orElseThrow(()->new BusinessException(BusinessExceptionType.RECODE_NOT_FOUNT));
+        manager.setManager(true);
+        ParkingBoy oldHeader = parkingBoyRepository.findManagerBySubordinate(manager.getId());
+        if (oldHeader != null) {
+            oldHeader.getParkingBoys().remove(manager);
+            parkingBoyRepository.save(oldHeader);
+        }
+        return parkingBoyRepository.save(manager);
+    }
+
+    public ParkingBoy addParkingBoyForManager(String id, List<ParkingBoy> parkingBoys) {
+        ParkingBoy manager = parkingBoyRepository.findById(id).orElseThrow(()->new BusinessException(BusinessExceptionType.RECODE_NOT_FOUNT));
+        if (manager.getParkingBoys() != null)
+            manager.getParkingBoys().addAll(parkingBoys);
+        else
+            manager.setParkingBoys(parkingBoys);
+        return parkingBoyRepository.save(manager);
+    }
+
+    public ParkingBoy degradeToParkingBoy(String id) {
+        ParkingBoy manager = parkingBoyRepository.findById(id).orElseThrow(()->new BusinessException(BusinessExceptionType.RECODE_NOT_FOUNT));
+        manager.setManager(false);
+        manager.setParkingBoys(null);
+        return parkingBoyRepository.save(manager);
+    }
+
+
 }
