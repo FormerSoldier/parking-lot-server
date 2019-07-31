@@ -17,6 +17,7 @@ import org.springframework.stereotype.Service;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 import java.util.Random;
@@ -136,7 +137,7 @@ public class ParkingOrderService {
         ParkingBoyVo parkingBoyVo = null;
         for (int i = 0; i < parkingOrders.size(); i++) {
             ParkingBoy parkParkingBoy = parkingOrders.get(i).getParkParkingBoy();
-            if (me.getId() == parkParkingBoy.getId()) {
+            if (me != null && parkParkingBoy != null && me.getId() == parkParkingBoy.getId()) {
                 ParkingOrder parkingOrder = parkingOrders.get(i);
                 Customer customer = parkingOrder.getCustomer();
                 User user = customer.getUser();
@@ -145,19 +146,21 @@ public class ParkingOrderService {
 
                 parkingBoyVo = new ParkingBoyVo();
 
-                parkingBoyVo.setOrderId(parkingOrder.getId());
-                parkingBoyVo.setUsername(user.getUsername());
+                //parkingBoyVo.setOrderId(parkingOrder.getId());
+                parkingBoyVo.setOrderId(parkingOrder.getNumber());
+                parkingBoyVo.setUsername(user.getName());
                 parkingBoyVo.setPhone(customer.getPhone());
                 parkingBoyVo.setCarNo(parkingOrder.getCarNo());
                 parkingBoyVo.setPrice(parkingOrder.getPrice());
                 parkingBoyVo.setSubmitTime(parkingOrder.getSubmitTime());
                 parkingBoyVo.setParkingLotName(parkingLot.getName());
                 parkingBoyVo.setFetchTime(parkingOrder.getFetchTime());
-                parkingBoyVo.setParkParkingBoyName(parkParkingBoy.getName());
-                parkingBoyVo.setFetchParkingBoyName(fetchParkingBoy.getName());
+                parkingBoyVo.setParkParkingBoyName(parkParkingBoy == null ? null : parkParkingBoy.getName());
+                parkingBoyVo.setFetchParkingBoyName(fetchParkingBoy == null ? null : fetchParkingBoy.getName());
                 parkingBoyVo.setOrderStatus(parkingOrder.getOrderStatus());
+                result.add(parkingBoyVo);
             }
-            result.add(parkingBoyVo);
+
         }
         return result;
     }
@@ -169,7 +172,7 @@ public class ParkingOrderService {
         ParkingBoyVo parkingBoyVo = null;
         for (int i = 0; i < parkingOrders.size(); i++) {
             ParkingBoy parkParkingBoy = parkingOrders.get(i).getFetchParkingBoy();
-            if (me.getId() == parkParkingBoy.getId()) {
+            if (me != null && parkParkingBoy != null && me.getId() == parkParkingBoy.getId()) {
                 ParkingOrder parkingOrder = parkingOrders.get(i);
                 Customer customer = parkingOrder.getCustomer();
                 User user = customer.getUser();
@@ -178,19 +181,21 @@ public class ParkingOrderService {
 
                 parkingBoyVo = new ParkingBoyVo();
 
-                parkingBoyVo.setOrderId(parkingOrder.getId());
-                parkingBoyVo.setUsername(user.getUsername());
+//                parkingBoyVo.setOrderId(parkingOrder.getId());
+                parkingBoyVo.setOrderId(parkingOrder.getNumber());
+                parkingBoyVo.setUsername(user.getName());
                 parkingBoyVo.setPhone(customer.getPhone());
                 parkingBoyVo.setCarNo(parkingOrder.getCarNo());
                 parkingBoyVo.setPrice(parkingOrder.getPrice());
                 parkingBoyVo.setSubmitTime(parkingOrder.getSubmitTime());
                 parkingBoyVo.setParkingLotName(parkingLot.getName());
                 parkingBoyVo.setFetchTime(parkingOrder.getFetchTime());
-                parkingBoyVo.setParkParkingBoyName(parkParkingBoy.getName());
-                parkingBoyVo.setFetchParkingBoyName(fetchParkingBoy.getName());
+                parkingBoyVo.setParkParkingBoyName(parkParkingBoy == null ? "" : parkParkingBoy.getName());
+                parkingBoyVo.setFetchParkingBoyName(fetchParkingBoy == null ? null : fetchParkingBoy.getName());
                 parkingBoyVo.setOrderStatus(parkingOrder.getOrderStatus());
+                result.add(parkingBoyVo);
             }
-            result.add(parkingBoyVo);
+
         }
         return result;
     }
@@ -198,22 +203,10 @@ public class ParkingOrderService {
     public List<ParkingBoyVo> getMySelfAllOrders() {
         List<ParkingBoyVo> parkOrders = getMySelfParkOrders();
         List<ParkingBoyVo> fetchOrders = getMySelfFetchOrder();
-
-        List<ParkingBoyVo> results = new ArrayList<>(parkOrders.size() + fetchOrders.size());
-        int i = 0;
-        int j = 0;
-
-        while (i <= parkOrders.size() && j <= fetchOrders.size()) {
-            results.add(parkOrders.get(i).getSubmitTime().before(fetchOrders.get(j).getSubmitTime()) ? parkOrders.get(i++) : fetchOrders.get(j));
-        }
-
-        while (i <= parkOrders.size()) {
-            results.add(parkOrders.get(i++));
-        }
-        while (j <= fetchOrders.size()) {
-            results.add(fetchOrders.get(j++));
-        }
-        return results;
+        List<ParkingBoyVo> temp = parkOrders.stream().filter((item) -> !fetchOrders.contains(item)).collect(Collectors.toList());
+        fetchOrders.addAll(temp);
+        parkOrders.sort(Comparator.comparing(o -> o.getSubmitTime().toString()));
+        return parkOrders;
     }
 
 
