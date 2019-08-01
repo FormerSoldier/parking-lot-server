@@ -1,10 +1,11 @@
 package com.oocl.ita.ivy.parkinglot.entity;
 
-import java.util.concurrent.ConcurrentHashMap;
+import java.util.Queue;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
 public class ProgressingDataStore {
-    public static ConcurrentHashMap<String, ParkingOrder> dataStore;
+    public static Queue<String> queue;
     static {
-        dataStore = new ConcurrentHashMap<>();
+        queue = new ConcurrentLinkedQueue<>();
     }
 }
