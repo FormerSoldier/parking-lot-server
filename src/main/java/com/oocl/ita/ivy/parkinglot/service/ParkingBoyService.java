@@ -16,6 +16,7 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class ParkingBoyService implements BaseService<ParkingBoy, String> {
@@ -115,9 +116,18 @@ public class ParkingBoyService implements BaseService<ParkingBoy, String> {
     }
 
     public ParkingBoy addParkingBoyForManager(String id, List<ParkingBoy> parkingBoys) {
-        ParkingBoy manager = parkingBoyRepository.findById(id).orElseThrow(()->new BusinessException(BusinessExceptionType.RECODE_NOT_FOUNT));
-        manager.setParkingBoys(parkingBoys);
-        return parkingBoyRepository.save(manager);
+        ParkingBoy manager = parkingBoyRepository.findById(id).orElseThrow(() -> new BusinessException(BusinessExceptionType.RECODE_NOT_FOUNT));
+        if (parkingBoys.size() == 0) {
+            manager.setParkingBoys(null);
+            return parkingBoyRepository.saveAndFlush(manager);
+        } else {
+            List<ParkingBoy> chooseBoys = new ArrayList<>();
+            for (ParkingBoy item : parkingBoys) {
+                chooseBoys.add(parkingBoyRepository.findById(item.getId()).orElseThrow(() -> new BusinessException(BusinessExceptionType.RECODE_NOT_FOUNT)));
+            }
+            manager.setParkingBoys(chooseBoys);
+            return parkingBoyRepository.saveAndFlush(manager);
+        }
     }
 
     public ParkingBoy degradeToParkingBoy(String id) {
@@ -135,6 +145,14 @@ public class ParkingBoyService implements BaseService<ParkingBoy, String> {
         return manager.getParkingBoys();
     }
 
+    public List<ParkingBoy> findLowerParkingBoy() {
+        List<ParkingBoy> chooseParkingBoysLists = parkingBoyRepository.findNotInManagedParkingBoy();
+        if (chooseParkingBoysLists.size() != 0) {
+            chooseParkingBoysLists = chooseParkingBoysLists.stream().filter(item -> !item.isManager()).collect(Collectors.toList());
+        }
+        return chooseParkingBoysLists;
+//        return parkingBoyRepository.findAll().stream().filter(it->!it.isManager()).collect(Collectors.toList());
+    }
     public List<ParkingBoy> getSubordinatesByUserId(Integer userId) {
         ParkingBoy parkingBoy = Optional.of(parkingBoyRepository.findByUserId(userId)).orElseThrow(()->new BusinessException(BusinessExceptionType.RECODE_NOT_FOUNT));
         return getSubordinatesByManagerId(parkingBoy.getId());

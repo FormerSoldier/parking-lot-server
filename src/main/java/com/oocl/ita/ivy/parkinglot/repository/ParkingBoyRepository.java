@@ -51,5 +51,10 @@ public interface ParkingBoyRepository extends JpaRepository<ParkingBoy, String> 
             "    ON parking_boys_table.parking_boy_id = parking_boy.id", nativeQuery = true)
     ParkingBoy findManagerBySubordinate(@Param("id") String id);
 
+    @Query(value = "SELECT * FROM parking_boy\n" +
+            "\tWHERE parking_boy.id NOT IN \n" +
+            "(SELECT parking_boys_id FROM parking_boy_parking_boys)",nativeQuery = true)
+    List<ParkingBoy> findNotInManagedParkingBoy();
+
     ParkingBoy findByUserId(Integer userId);
 }

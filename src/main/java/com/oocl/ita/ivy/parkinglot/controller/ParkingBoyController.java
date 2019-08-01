@@ -102,4 +102,11 @@ public class ParkingBoyController implements BaseController<ParkingBoy, String> 
     public List<ParkingBoy> getSubordinatesByUserId(@PathVariable Integer id) {
         return parkingBoyService.getSubordinatesByUserId(id);
     }
+
+
+    @GetMapping("/findLowerParkingBoy")
+    public List<ParkingBoy> parkingBoys(){
+        return parkingBoyService.findLowerParkingBoy();
+    }
+
 }
