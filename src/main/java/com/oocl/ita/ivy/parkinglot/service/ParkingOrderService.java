@@ -131,25 +131,9 @@ public class ParkingOrderService {
             ParkingBoy parkParkingBoy = parkingOrders.get(i).getParkParkingBoy();
             if (me != null && parkParkingBoy != null && me.getId().equals(parkParkingBoy.getId())) {
                 ParkingOrder parkingOrder = parkingOrders.get(i);
-                Customer customer = parkingOrder.getCustomer();
-                User user = customer.getUser();
-                ParkingBoy fetchParkingBoy = parkingOrder.getFetchParkingBoy();
-                ParkingLot parkingLot = parkingOrder.getParkingLot();
-
-                parkingBoyVo = new ParkingBoyVo();
-
-                parkingBoyVo.setOrderId(parkingOrder.getId());
-                parkingBoyVo.setNumber(parkingOrder.getNumber());
-                parkingBoyVo.setUsername(user.getName());
-                parkingBoyVo.setPhone(customer.getPhone());
-                parkingBoyVo.setCarNo(parkingOrder.getCarNo());
-                parkingBoyVo.setPrice(parkingOrder.getPrice());
-                parkingBoyVo.setSubmitTime(parkingOrder.getSubmitTime());
-                parkingBoyVo.setParkingLotName(parkingLot.getName());
-                parkingBoyVo.setFetchTime(parkingOrder.getFetchTime());
-                parkingBoyVo.setParkParkingBoyName(parkParkingBoy == null ? "" : parkParkingBoy.getName());
-                parkingBoyVo.setFetchParkingBoyName(fetchParkingBoy == null ? "" : fetchParkingBoy.getName());
-                parkingBoyVo.setOrderStatus(parkingOrder.getOrderStatus());
+                parkingBoyVo = getParkingBoyVoByParkingOrder(parkingOrder);
+                parkingBoyVo.setParkParkingBoyName(parkParkingBoy.getName());
+                parkingBoyVo.setFetchParkingBoyName(parkingOrder.getFetchParkingBoy() == null ? "" :parkingOrder.getFetchParkingBoy().getName());
                 result.add(parkingBoyVo);
             }
 
@@ -166,25 +150,9 @@ public class ParkingOrderService {
             ParkingBoy fetchParkingBoy = parkingOrders.get(i).getFetchParkingBoy();
             if (me != null && fetchParkingBoy != null && me.getId().equals(fetchParkingBoy.getId())) {
                 ParkingOrder parkingOrder = parkingOrders.get(i);
-                Customer customer = parkingOrder.getCustomer();
-                User user = customer.getUser();
-//                ParkingBoy fetchParkingBoy = parkingOrder.getFetchParkingBoy();
-                ParkingLot parkingLot = parkingOrder.getParkingLot();
-
-                parkingBoyVo = new ParkingBoyVo();
-
-                parkingBoyVo.setOrderId(parkingOrder.getId());
-                parkingBoyVo.setNumber(parkingOrder.getNumber());
-                parkingBoyVo.setUsername(user.getName());
-                parkingBoyVo.setPhone(customer.getPhone());
-                parkingBoyVo.setCarNo(parkingOrder.getCarNo());
-                parkingBoyVo.setPrice(parkingOrder.getPrice());
-                parkingBoyVo.setSubmitTime(parkingOrder.getSubmitTime());
-                parkingBoyVo.setParkingLotName(parkingLot.getName());
-                parkingBoyVo.setFetchTime(parkingOrder.getFetchTime());
+                parkingBoyVo = getParkingBoyVoByParkingOrder(parkingOrder);
                 parkingBoyVo.setParkParkingBoyName(parkingOrder.getParkParkingBoy() == null ? "" : parkingOrder.getParkParkingBoy().getName());
-                parkingBoyVo.setFetchParkingBoyName(fetchParkingBoy == null ? null : fetchParkingBoy.getName());
-                parkingBoyVo.setOrderStatus(parkingOrder.getOrderStatus());
+                parkingBoyVo.setFetchParkingBoyName(fetchParkingBoy.getName());
                 result.add(parkingBoyVo);
             }
 
@@ -197,8 +165,6 @@ public class ParkingOrderService {
         List<ParkingBoyVo> fetchOrders = getMySelfFetchOrder();
         List<ParkingBoyVo> temp = parkOrders.stream().filter((item) -> !fetchOrders.contains(item)).collect(Collectors.toList());
         fetchOrders.addAll(temp);
-        //fetchOrders.addAll(parkOrders);
-        //parkOrders.sort(Comparator.comparing(o -> o.getSubmitTime().toString()));
         fetchOrders.sort((o1, o2) -> o2.getSubmitTime().toString().compareTo(o1.getSubmitTime().toString()));
         return fetchOrders;
     }
@@ -231,16 +197,6 @@ public class ParkingOrderService {
 
     public ParkingBoyVo parkingBoyFetch(String orderId){
         ParkingOrder parkingOrder = orderRepository.findById(orderId).orElseThrow(() ->new BusinessException(RECODE_NOT_FOUNT));
-//        User user = parkingOrder.getCustomer().getUser();
-//        Customer customer = parkingOrder.getCustomer();
-//        ParkingBoyVo parkingBoyVo = new ParkingBoyVo();
-//        parkingBoyVo.setOrderId(parkingOrder.getId());
-//        parkingBoyVo.setNumber(parkingOrder.getNumber());
-//        parkingBoyVo.setUsername(user.getName());
-//        parkingBoyVo.setPhone(customer.getPhone());
-//        parkingBoyVo.setCarNo(parkingOrder.getCarNo());
-//        parkingBoyVo.setSubmitTime(parkingOrder.getSubmitTime());
-//        parkingBoyVo.setOrderStatus(parkingOrder.getOrderStatus());
         ParkingBoy me = parkingBoyService.getCurrentParkingBoy();
 
         ParkingLot parkingLot = parkingOrder.getParkingLot();
@@ -255,11 +211,8 @@ public class ParkingOrderService {
         parkingLot.setUsedCapacity(parkingLot.getUsedCapacity()-1);
 
         ParkingBoyVo parkingBoyVo = getParkingBoyVoByParkingOrder(parkingOrder);
-        //parkingBoyVo.setOrderStatus(parkingOrder.getOrderStatus());
         parkingBoyVo.setParkParkingBoyName(parkingOrder.getParkParkingBoy().getName());
         parkingBoyVo.setFetchParkingBoyName(me.getName());
-//        parkingBoyVo.setFetchTime(parkingOrder.getEndTime());
-
         orderRepository.save(parkingOrder);
         return parkingBoyVo;
     }
