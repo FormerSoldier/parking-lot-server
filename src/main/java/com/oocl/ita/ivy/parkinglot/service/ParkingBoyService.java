@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.expression.ExpressionException;
+import org.springframework.hateoas.alps.Doc;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -104,6 +105,9 @@ public class ParkingBoyService implements BaseService<ParkingBoy, String> {
     public ParkingBoy upgradeToManager(String id) {
         ParkingBoy manager = parkingBoyRepository.findById(id).orElseThrow(()->new BusinessException(BusinessExceptionType.RECODE_NOT_FOUNT));
         manager.setManager(true);
+        List<String> roles = manager.getUser().getRoles();
+        roles.add(String.valueOf(Role.MANAGER));
+        manager.getUser().setRoles(roles);
         ParkingBoy oldHeader = parkingBoyRepository.findManagerBySubordinate(manager.getId());
         if (oldHeader != null) {
             oldHeader.getParkingBoys().remove(manager);
@@ -130,6 +134,7 @@ public class ParkingBoyService implements BaseService<ParkingBoy, String> {
     public ParkingBoy degradeToParkingBoy(String id) {
         ParkingBoy manager = parkingBoyRepository.findById(id).orElseThrow(()->new BusinessException(BusinessExceptionType.RECODE_NOT_FOUNT));
         manager.setManager(false);
+        manager.getUser().setRoles(String.valueOf(Role.PARKINGBOY));
         manager.setParkingBoys(null);
         return parkingBoyRepository.save(manager);
     }
@@ -147,10 +152,25 @@ public class ParkingBoyService implements BaseService<ParkingBoy, String> {
             chooseParkingBoysLists = chooseParkingBoysLists.stream().filter(item -> !item.isManager()).collect(Collectors.toList());
         }
         return chooseParkingBoysLists;
-//        return parkingBoyRepository.findAll().stream().filter(it->!it.isManager()).collect(Collectors.toList());
     }
+
     public List<ParkingBoy> getSubordinatesByUserId(Integer userId) {
         ParkingBoy parkingBoy = Optional.of(parkingBoyRepository.findByUserId(userId)).orElseThrow(()->new BusinessException(BusinessExceptionType.RECODE_NOT_FOUNT));
         return getSubordinatesByManagerId(parkingBoy.getId());
+    }
+
+    public void raiseSalary(double sum) {
+        List<ParkingBoy> parkingBoys = parkingBoyRepository.findAllByDeleteFlag();
+        double points = 0;
+        for (ParkingBoy p : parkingBoys) {
+            points += p.getOrderNumInClose() + p.getOrderNumInOpen()*5;
+        }
+        for (ParkingBoy parkingBoy : parkingBoys) {
+            double pbPonit = parkingBoy.getOrderNumInClose() + parkingBoy.getOrderNumInOpen()*5;
+            double newSalary = parkingBoy.getSalary() + (pbPonit/points) * sum;
+            newSalary = Math.floor(newSalary*100)/100;
+            parkingBoy.setSalary(newSalary);
+            parkingBoyRepository.save(parkingBoy);
+        }
     }
 }

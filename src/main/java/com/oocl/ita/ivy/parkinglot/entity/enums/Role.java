@@ -4,7 +4,8 @@ public enum Role {
     ADMIN("ADMIN"),
     CUSTOMER("CUSTOMER"),
     PARKINGBOY("PARKINGBOY"),
-    HR("HR");
+    HR("HR"),
+    MANAGER("MANAGER");
     private String role;
 
     Role(String role) {
