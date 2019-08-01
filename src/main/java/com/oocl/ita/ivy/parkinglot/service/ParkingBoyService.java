@@ -103,6 +103,9 @@ public class ParkingBoyService implements BaseService<ParkingBoy, String> {
     public ParkingBoy upgradeToManager(String id) {
         ParkingBoy manager = parkingBoyRepository.findById(id).orElseThrow(()->new BusinessException(BusinessExceptionType.RECODE_NOT_FOUNT));
         manager.setManager(true);
+        List<String> roles = manager.getUser().getRoles();
+        roles.add(String.valueOf(Role.MANAGER));
+        manager.getUser().setRoles(roles);
         ParkingBoy oldHeader = parkingBoyRepository.findManagerBySubordinate(manager.getId());
         if (oldHeader != null) {
             oldHeader.getParkingBoys().remove(manager);
@@ -120,6 +123,7 @@ public class ParkingBoyService implements BaseService<ParkingBoy, String> {
     public ParkingBoy degradeToParkingBoy(String id) {
         ParkingBoy manager = parkingBoyRepository.findById(id).orElseThrow(()->new BusinessException(BusinessExceptionType.RECODE_NOT_FOUNT));
         manager.setManager(false);
+        manager.getUser().setRoles(String.valueOf(Role.PARKINGBOY));
         manager.setParkingBoys(null);
         return parkingBoyRepository.save(manager);
     }

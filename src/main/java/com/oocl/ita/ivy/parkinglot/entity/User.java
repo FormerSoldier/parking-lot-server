@@ -2,6 +2,7 @@ package com.oocl.ita.ivy.parkinglot.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.oocl.ita.ivy.parkinglot.entity.enums.Role;
 import lombok.Data;
 import org.apache.commons.lang3.StringUtils;
 import org.hibernate.annotations.*;
@@ -10,6 +11,7 @@ import javax.persistence.*;
 import javax.persistence.Entity;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
@@ -92,7 +94,12 @@ public class User extends com.itmuch.lightsecurity.jwt.User {
     }
 
     public List<String> getRoles() {
-        return Arrays.asList(roles.split(","));
+        List<String> list = new ArrayList<>();
+        String[] str = roles.split(",");
+        for(int i = 0; i < str.length; i++){
+            list.add(str[i]);
+        }
+        return list;
     }
 
     public void setRoles(String roles) {
