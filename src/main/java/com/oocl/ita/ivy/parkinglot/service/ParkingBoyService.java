@@ -161,15 +161,13 @@ public class ParkingBoyService implements BaseService<ParkingBoy, String> {
 
     public void raiseSalary(double sum) {
         List<ParkingBoy> parkingBoys = parkingBoyRepository.findAllByDeleteFlag();
-        double points = parkingBoys.stream().mapToDouble(ParkingBoy::getOrderNumInOpen).sum() * 5 + parkingBoys.stream().mapToDouble(ParkingBoy::getOrderNumInClose).sum();
-        if (points > 0) {
-            for (ParkingBoy parkingBoy : parkingBoys) {
-                double pbPonit = parkingBoy.getOrderNumInClose() + parkingBoy.getOrderNumInOpen() * 5;
-                double newSalary = parkingBoy.getSalary() + (pbPonit / points) * sum;
-                newSalary = Math.floor(newSalary * 100) / 100;
-                parkingBoy.setSalary(newSalary);
-                parkingBoyRepository.save(parkingBoy);
-            }
+        double points = parkingBoys.stream().mapToDouble(ParkingBoy::getOrderNumInOpen).sum() * 5 + parkingBoys.stream().mapToDouble(ParkingBoy::getOrderNumInClose).sum() + parkingBoys.size();
+        for (ParkingBoy parkingBoy : parkingBoys) {
+            double pbPonit = parkingBoy.getOrderNumInClose() + parkingBoy.getOrderNumInOpen() * 5 +1;
+            double newSalary = parkingBoy.getSalary() + (pbPonit / points) * sum;
+            newSalary = Math.floor(newSalary * 100) / 100;
+            parkingBoy.setSalary(newSalary);
+            parkingBoyRepository.save(parkingBoy);
         }
     }
 }
