@@ -21,7 +21,7 @@ public class ParkingOrderController {
 
     @PostMapping(path = "/{customerUsername}/car-no/{carNo}")
     public ParkingOrder save(@PathVariable String customerUsername, @PathVariable String carNo) {
-        return orderService.customerPark(customerUsername, carNo);
+        return orderService.customerSubmitParkParkingOrder(customerUsername, carNo);
     }
 
     @PostMapping("/fetch/{id}")
