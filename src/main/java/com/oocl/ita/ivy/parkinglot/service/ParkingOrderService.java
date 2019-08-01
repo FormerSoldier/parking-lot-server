@@ -73,7 +73,7 @@ public class ParkingOrderService {
         }
         //找到第一个为有位置的parking_lot
         ParkingLot validParkingLot = null;
-        ParkingLot temp = null;
+        ParkingLot temp;
         for (int i = 0; i < parkingBoy.getParkingLotList().size(); i++) {
             temp = parkingBoy.getParkingLotList().get(i);
             if (temp.getCapacity() > temp.getUsedCapacity()) {
@@ -94,7 +94,7 @@ public class ParkingOrderService {
         parkingOrder.setNumber(number);
         parkingBoy.setFree(false);
 
-        parkingBoyService.saveParkingBoy(parkingBoy);
+        parkingBoyRepository.save(parkingBoy);
         return orderRepository.save(parkingOrder);
     }
 
@@ -131,7 +131,6 @@ public class ParkingOrderService {
 
         fetchParkingBoy.setFree(false);
 
-        parkingBoyService.saveParkingBoy(fetchParkingBoy);
         return orderRepository.save(parkingOrder);
     }
 
@@ -168,11 +167,9 @@ public class ParkingOrderService {
                 parkingBoyVo.setFetchParkingBoyName(fetchParkingBoy.getName());
                 result.add(parkingBoyVo);
             }
-
         }
         return result;
     }
-
     public List<ParkingBoyVo> getMySelfAllOrders() {
         List<ParkingBoyVo> parkOrders = getMySelfParkOrders();
         List<ParkingBoyVo> fetchOrders = getMySelfFetchOrder();
@@ -181,7 +178,6 @@ public class ParkingOrderService {
         fetchOrders.sort((o1, o2) -> o2.getSubmitTime().toString().compareTo(o1.getSubmitTime().toString()));
         return fetchOrders;
     }
-
     public Page<ParkingOrder> findAll(Pageable pageable) {
         return orderRepository.findAll(pageable);
     }
@@ -189,10 +185,7 @@ public class ParkingOrderService {
     public ParkingOrder findById(String id) {
         return orderRepository.findById(id).orElseThrow(() -> new BusinessException(RECODE_NOT_FOUNT));
     }
-
-
     public ParkingBoyVo parkingBoyPark(String orderId){
-
         ParkingOrder parkingOrder = orderRepository.findById(orderId).orElseThrow(() ->new BusinessException(RECODE_NOT_FOUNT));
         ParkingBoyVo parkingBoyVo = getParkingBoyVoByParkingOrder(parkingOrder);
         ParkingBoy me = parkingBoyService.getCurrentParkingBoy();
@@ -202,8 +195,8 @@ public class ParkingOrderService {
         me.setFree(true);
         //这里再调用系统自动指派订单
         newThreadToAssignOrder();
-
         parkingBoyVo.setParkParkingBoyName(me.getName());
+        parkingBoyVo.setOrderStatus(OrderStatus.PARK);
         orderRepository.save(parkingOrder);
         return parkingBoyVo;
     }
@@ -214,21 +207,17 @@ public class ParkingOrderService {
 
         ParkingLot parkingLot = parkingOrder.getParkingLot();
         me.setFree(true);
-
         // 调用系统指派订单
         newThreadToAssignOrder();
-
         parkingOrder.setOrderStatus(OrderStatus.PAID);
         parkingOrder.setFetchParkingBoy(me);
         parkingOrder.setFetchTime(new Date());
-
         parkingLot.setUsedCapacity(parkingLot.getUsedCapacity()-1);
-
         ParkingBoyVo parkingBoyVo = getParkingBoyVoByParkingOrder(parkingOrder);
         parkingBoyVo.setParkParkingBoyName(parkingOrder.getParkParkingBoy().getName());
         parkingBoyVo.setFetchParkingBoyName(me.getName());
+        parkingBoyVo.setOrderStatus(OrderStatus.PAID);
 
-        parkingBoyService.save(me);
         orderRepository.save(parkingOrder);
         return parkingBoyVo;
     }
