@@ -36,6 +36,11 @@ public class ParkingBoyService implements BaseService<ParkingBoy, String> {
         return parkingBoyRepository.save(parkingBoy);
     }
 
+    public ParkingBoy saveParkingBoy(ParkingBoy parkingBoy){
+        return parkingBoyRepository.save(parkingBoy);
+    }
+
+
     @Override
     public List<ParkingBoy> findAll() {
         return parkingBoyRepository.findAll();

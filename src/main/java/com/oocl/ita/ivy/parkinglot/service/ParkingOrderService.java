@@ -93,6 +93,8 @@ public class ParkingOrderService {
         String number = new SimpleDateFormat("yyyyMMddHH").format(new Date()) + new Random().nextInt(1000) + userId;
         parkingOrder.setNumber(number);
         parkingBoy.setFree(false);
+
+        parkingBoyService.saveParkingBoy(parkingBoy);
         return orderRepository.save(parkingOrder);
     }
 
@@ -112,13 +114,24 @@ public class ParkingOrderService {
 
         double rate = expenseRateService.getExpenseRate().getExpenseRate();
         parkingOrder.setOrderStatus(OrderStatus.ACCEPT_FETCH);
-        parkingOrder.setFetchParkingBoy(parkingBoyList.get(0));
+
+
+        ParkingBoy fetchParkingBoy = parkingBoyList.get(0);
+        if(fetchParkingBoy.getStatus().equals(ParkingBoyStatus.OPEN))
+            fetchParkingBoy.setOrderNumInOpen(fetchParkingBoy.getOrderNumInOpen()+1);
+        else
+            fetchParkingBoy.setOrderNumInClose(fetchParkingBoy.getOrderNumInOpen()+1);
+
+        parkingOrder.setFetchParkingBoy(fetchParkingBoy);
+
 
         long diffHour = TimeUtils.getTwoDateDiffHours(parkingOrder.getStartTime(), parkingOrder.getEndTime());
         diffHour = diffHour == 0 ? 1 : diffHour;
         parkingOrder.setPrice(rate * diffHour);
 
-        parkingBoyList.get(0).setFree(false);
+        fetchParkingBoy.setFree(false);
+
+        parkingBoyService.saveParkingBoy(fetchParkingBoy);
         return orderRepository.save(parkingOrder);
     }
 
@@ -201,6 +214,7 @@ public class ParkingOrderService {
 
         ParkingLot parkingLot = parkingOrder.getParkingLot();
         me.setFree(true);
+
         // 调用系统指派订单
         newThreadToAssignOrder();
 
@@ -213,6 +227,8 @@ public class ParkingOrderService {
         ParkingBoyVo parkingBoyVo = getParkingBoyVoByParkingOrder(parkingOrder);
         parkingBoyVo.setParkParkingBoyName(parkingOrder.getParkParkingBoy().getName());
         parkingBoyVo.setFetchParkingBoyName(me.getName());
+
+        parkingBoyService.save(me);
         orderRepository.save(parkingOrder);
         return parkingBoyVo;
     }
@@ -251,7 +267,12 @@ public class ParkingOrderService {
     private void newThreadToAssignOrder(){
         if(!ProgressingDataStore.queue.isEmpty()){
             ParkingOrder newParkingOrder = orderRepository.findById(ProgressingDataStore.queue.poll()).orElseThrow(() -> new BusinessException(RECODE_NOT_FOUNT));
-            Runnable runnable = () -> systemAssignOrder(newParkingOrder);
+            Runnable runnable = () -> {
+                if(newParkingOrder.getOrderStatus().equals(OrderStatus.PROGRESSING))
+                    systemAssignOrder(newParkingOrder);
+                else
+                    parkingBoyFetch(newParkingOrder.getId());
+            };
             new Thread(runnable).start();
         }
     }

@@ -39,7 +39,7 @@ public interface ParkingBoyRepository extends JpaRepository<ParkingBoy, String> 
             ") AS parking_boy_table" +
             "    INNER JOIN parking_boy" +
             "    ON parking_boy_table.parking_boy_id = parking_boy.id" +
-            "    WHERE status = :status", nativeQuery = true)
+            "    WHERE status = :status AND free = 1", nativeQuery = true)
     List<ParkingBoy> getParkingBoyByParkingLot(@Param("id") String id, @Param("status") String status);
 
     List<ParkingBoy> findAllByStatus(ParkingBoyStatus status);
