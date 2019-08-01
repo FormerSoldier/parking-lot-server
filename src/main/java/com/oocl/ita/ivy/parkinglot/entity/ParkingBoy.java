@@ -46,7 +46,7 @@ public class ParkingBoy {
 
     private int orderNumInClose;
 
-    private boolean free;
+    private boolean free = true;
 
 
     @Column

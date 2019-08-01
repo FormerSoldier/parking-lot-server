@@ -65,7 +65,6 @@ public class ParkingOrderService {
             parkingBoy = parkingBoyService.getParkingBoyInSomeStatus(ParkingBoyStatus.STOP.getStatus());
             if(parkingBoy == null) {
                 //订单设置为待处理,并保存到数据库和暂存区中
-                //throw new BusinessException(BusinessExceptionType.PARKING_BOY_NOT_AVAILABLE);
                 return processingCondition(parkingOrder, OrderStatus.PROGRESSING);
             }
             parkingBoy.setOrderNumInClose(parkingBoy.getOrderNumInClose()+1);
@@ -105,21 +104,21 @@ public class ParkingOrderService {
             parkingBoyList = parkingBoyService.getParkingBoyByParkingLot(parkingLot.getId(), String.valueOf(ParkingBoyStatus.STOP));
         }
         if (parkingBoyList.size() == 0) {
-            throw new BusinessException(BusinessExceptionType.PARKING_BOY_NOT_AVAILABLE);
             // 如果该停车场中，没有空闲的parkingboy，那么修改订单为待取车
-            //return processingCondition(parkingOrder, OrderStatus.ACCEPT_FETCH);
+            return processingCondition(parkingOrder, OrderStatus.FETCHING);
         }
+        // calculate price
+        parkingOrder.setEndTime(new Date());
+
+        double rate = expenseRateService.getExpenseRate().getExpenseRate();
         parkingOrder.setOrderStatus(OrderStatus.ACCEPT_FETCH);
         parkingOrder.setFetchParkingBoy(parkingBoyList.get(0));
 
-        double rate = expenseRateService.getExpenseRate().getExpenseRate();
         long diffHour = TimeUtils.getTwoDateDiffHours(parkingOrder.getStartTime(), parkingOrder.getEndTime());
         diffHour = diffHour == 0 ? 1 : diffHour;
         parkingOrder.setPrice(rate * diffHour);
 
-
         parkingBoyList.get(0).setFree(false);
-
         return orderRepository.save(parkingOrder);
     }
 
@@ -127,45 +126,10 @@ public class ParkingOrderService {
         ParkingBoy me = parkingBoyService.getCurrentParkingBoy();
         List<ParkingOrder> parkingOrders = orderRepository.findAll();
         List<ParkingBoyVo> result = new ArrayList<>();
-        ParkingBoyVo parkingBoyVo = null;
+        ParkingBoyVo parkingBoyVo;
         for (int i = 0; i < parkingOrders.size(); i++) {
             ParkingBoy parkParkingBoy = parkingOrders.get(i).getParkParkingBoy();
-            if (me != null && parkParkingBoy != null && me.getId() == parkParkingBoy.getId()) {
-                ParkingOrder parkingOrder = parkingOrders.get(i);
-                Customer customer = parkingOrder.getCustomer();
-                User user = customer.getUser();
-                ParkingBoy fetchParkingBoy = parkingOrder.getFetchParkingBoy();
-                ParkingLot parkingLot = parkingOrder.getParkingLot();
-
-                parkingBoyVo = new ParkingBoyVo();
-
-                parkingBoyVo.setOrderId(parkingOrder.getId());
-                parkingBoyVo.setNumber(parkingOrder.getNumber());
-                parkingBoyVo.setUsername(user.getName());
-                parkingBoyVo.setPhone(customer.getPhone());
-                parkingBoyVo.setCarNo(parkingOrder.getCarNo());
-                parkingBoyVo.setPrice(parkingOrder.getPrice());
-                parkingBoyVo.setSubmitTime(parkingOrder.getSubmitTime());
-                parkingBoyVo.setParkingLotName(parkingLot.getName());
-                parkingBoyVo.setFetchTime(parkingOrder.getFetchTime());
-                parkingBoyVo.setParkParkingBoyName(parkParkingBoy == null ? null : parkParkingBoy.getName());
-                parkingBoyVo.setFetchParkingBoyName(fetchParkingBoy == null ? null : fetchParkingBoy.getName());
-                parkingBoyVo.setOrderStatus(parkingOrder.getOrderStatus());
-                result.add(parkingBoyVo);
-            }
-
-        }
-        return result;
-    }
-
-    public List<ParkingBoyVo> getMySelfFetchOrder() {
-        ParkingBoy me = parkingBoyService.getCurrentParkingBoy();
-        List<ParkingOrder> parkingOrders = orderRepository.findAll();
-        List<ParkingBoyVo> result = new ArrayList<>();
-        ParkingBoyVo parkingBoyVo = null;
-        for (int i = 0; i < parkingOrders.size(); i++) {
-            ParkingBoy parkParkingBoy = parkingOrders.get(i).getFetchParkingBoy();
-            if (me != null && parkParkingBoy != null && me.getId() == parkParkingBoy.getId()) {
+            if (me != null && parkParkingBoy != null && me.getId().equals(parkParkingBoy.getId())) {
                 ParkingOrder parkingOrder = parkingOrders.get(i);
                 Customer customer = parkingOrder.getCustomer();
                 User user = customer.getUser();
@@ -184,6 +148,41 @@ public class ParkingOrderService {
                 parkingBoyVo.setParkingLotName(parkingLot.getName());
                 parkingBoyVo.setFetchTime(parkingOrder.getFetchTime());
                 parkingBoyVo.setParkParkingBoyName(parkParkingBoy == null ? "" : parkParkingBoy.getName());
+                parkingBoyVo.setFetchParkingBoyName(fetchParkingBoy == null ? "" : fetchParkingBoy.getName());
+                parkingBoyVo.setOrderStatus(parkingOrder.getOrderStatus());
+                result.add(parkingBoyVo);
+            }
+
+        }
+        return result;
+    }
+
+    public List<ParkingBoyVo> getMySelfFetchOrder() {
+        ParkingBoy me = parkingBoyService.getCurrentParkingBoy();
+        List<ParkingOrder> parkingOrders = orderRepository.findAll();
+        List<ParkingBoyVo> result = new ArrayList<>();
+        ParkingBoyVo parkingBoyVo;
+        for (int i = 0; i < parkingOrders.size(); i++) {
+            ParkingBoy fetchParkingBoy = parkingOrders.get(i).getFetchParkingBoy();
+            if (me != null && fetchParkingBoy != null && me.getId().equals(fetchParkingBoy.getId())) {
+                ParkingOrder parkingOrder = parkingOrders.get(i);
+                Customer customer = parkingOrder.getCustomer();
+                User user = customer.getUser();
+//                ParkingBoy fetchParkingBoy = parkingOrder.getFetchParkingBoy();
+                ParkingLot parkingLot = parkingOrder.getParkingLot();
+
+                parkingBoyVo = new ParkingBoyVo();
+
+                parkingBoyVo.setOrderId(parkingOrder.getId());
+                parkingBoyVo.setNumber(parkingOrder.getNumber());
+                parkingBoyVo.setUsername(user.getName());
+                parkingBoyVo.setPhone(customer.getPhone());
+                parkingBoyVo.setCarNo(parkingOrder.getCarNo());
+                parkingBoyVo.setPrice(parkingOrder.getPrice());
+                parkingBoyVo.setSubmitTime(parkingOrder.getSubmitTime());
+                parkingBoyVo.setParkingLotName(parkingLot.getName());
+                parkingBoyVo.setFetchTime(parkingOrder.getFetchTime());
+                parkingBoyVo.setParkParkingBoyName(parkingOrder.getParkParkingBoy() == null ? "" : parkingOrder.getParkParkingBoy().getName());
                 parkingBoyVo.setFetchParkingBoyName(fetchParkingBoy == null ? null : fetchParkingBoy.getName());
                 parkingBoyVo.setOrderStatus(parkingOrder.getOrderStatus());
                 result.add(parkingBoyVo);
@@ -198,8 +197,10 @@ public class ParkingOrderService {
         List<ParkingBoyVo> fetchOrders = getMySelfFetchOrder();
         List<ParkingBoyVo> temp = parkOrders.stream().filter((item) -> !fetchOrders.contains(item)).collect(Collectors.toList());
         fetchOrders.addAll(temp);
-        parkOrders.sort(Comparator.comparing(o -> o.getSubmitTime().toString()));
-        return parkOrders;
+        //fetchOrders.addAll(parkOrders);
+        //parkOrders.sort(Comparator.comparing(o -> o.getSubmitTime().toString()));
+        fetchOrders.sort((o1, o2) -> o2.getSubmitTime().toString().compareTo(o1.getSubmitTime().toString()));
+        return fetchOrders;
     }
 
     public Page<ParkingOrder> findAll(Pageable pageable) {
@@ -221,11 +222,8 @@ public class ParkingOrderService {
         parkingOrder.setOrderStatus(OrderStatus.PARK);
         me.setFree(true);
         //这里再调用系统自动指派订单
-        if(!ProgressingDataStore.queue.isEmpty()){
-            ParkingOrder newParkingOrder = orderRepository.findById(ProgressingDataStore.queue.poll()).orElseThrow(() -> new BusinessException(RECODE_NOT_FOUNT));
-            Runnable runnable = () -> systemAssignOrder(newParkingOrder);
-            new Thread(runnable).start();
-        }
+        newThreadToAssignOrder();
+
         parkingBoyVo.setParkParkingBoyName(me.getName());
         orderRepository.save(parkingOrder);
         return parkingBoyVo;
@@ -233,43 +231,34 @@ public class ParkingOrderService {
 
     public ParkingBoyVo parkingBoyFetch(String orderId){
         ParkingOrder parkingOrder = orderRepository.findById(orderId).orElseThrow(() ->new BusinessException(RECODE_NOT_FOUNT));
-        User user = parkingOrder.getCustomer().getUser();
-        Customer customer = parkingOrder.getCustomer();
-
-        ParkingBoyVo parkingBoyVo = new ParkingBoyVo();
-
-        parkingBoyVo.setOrderId(parkingOrder.getId());
-        parkingBoyVo.setNumber(parkingOrder.getNumber());
-        parkingBoyVo.setUsername(user.getName());
-        parkingBoyVo.setPhone(customer.getPhone());
-        parkingBoyVo.setCarNo(parkingOrder.getCarNo());
-        parkingBoyVo.setSubmitTime(parkingOrder.getSubmitTime());
-        parkingBoyVo.setOrderStatus(parkingOrder.getOrderStatus());
-
-
+//        User user = parkingOrder.getCustomer().getUser();
+//        Customer customer = parkingOrder.getCustomer();
+//        ParkingBoyVo parkingBoyVo = new ParkingBoyVo();
+//        parkingBoyVo.setOrderId(parkingOrder.getId());
+//        parkingBoyVo.setNumber(parkingOrder.getNumber());
+//        parkingBoyVo.setUsername(user.getName());
+//        parkingBoyVo.setPhone(customer.getPhone());
+//        parkingBoyVo.setCarNo(parkingOrder.getCarNo());
+//        parkingBoyVo.setSubmitTime(parkingOrder.getSubmitTime());
+//        parkingBoyVo.setOrderStatus(parkingOrder.getOrderStatus());
         ParkingBoy me = parkingBoyService.getCurrentParkingBoy();
 
         ParkingLot parkingLot = parkingOrder.getParkingLot();
-
         me.setFree(true);
-
         // 调用系统指派订单
-
-        parkingLot.setUsedCapacity(parkingLot.getUsedCapacity()-1);
-
+        newThreadToAssignOrder();
 
         parkingOrder.setOrderStatus(OrderStatus.PAID);
         parkingOrder.setFetchParkingBoy(me);
         parkingOrder.setFetchTime(new Date());
 
+        parkingLot.setUsedCapacity(parkingLot.getUsedCapacity()-1);
 
-
-        parkingBoyVo.setPrice(parkingOrder.getPrice());
+        ParkingBoyVo parkingBoyVo = getParkingBoyVoByParkingOrder(parkingOrder);
+        //parkingBoyVo.setOrderStatus(parkingOrder.getOrderStatus());
         parkingBoyVo.setParkParkingBoyName(parkingOrder.getParkParkingBoy().getName());
-        parkingBoyVo.setOrderStatus(parkingOrder.getOrderStatus());
-        parkingBoyVo.setParkingLotName(parkingLot.getName());
         parkingBoyVo.setFetchParkingBoyName(me.getName());
-        parkingBoyVo.setFetchTime(parkingOrder.getEndTime());
+//        parkingBoyVo.setFetchTime(parkingOrder.getEndTime());
 
         orderRepository.save(parkingOrder);
         return parkingBoyVo;
@@ -291,6 +280,7 @@ public class ParkingOrderService {
 
         parkingBoyVo.setParkingLotName(parkingLot.getName());
         parkingBoyVo.setOrderId(parkingOrder.getId());
+        parkingBoyVo.setPrice(parkingOrder.getPrice());
         parkingBoyVo.setNumber(parkingOrder.getNumber());
         parkingBoyVo.setUsername(user.getName());
         parkingBoyVo.setPhone(customer.getPhone());
@@ -298,10 +288,19 @@ public class ParkingOrderService {
         parkingBoyVo.setSubmitTime(parkingOrder.getSubmitTime());
         parkingBoyVo.setOrderStatus(parkingOrder.getOrderStatus());
         parkingBoyVo.setOrderStatus(parkingOrder.getOrderStatus());
+        parkingBoyVo.setFetchTime(parkingOrder.getEndTime());
         parkingBoyVo.setFetchParkingBoyName("");
         parkingBoyVo.setParkParkingBoyName("");
 
         return parkingBoyVo;
+    }
+
+    private void newThreadToAssignOrder(){
+        if(!ProgressingDataStore.queue.isEmpty()){
+            ParkingOrder newParkingOrder = orderRepository.findById(ProgressingDataStore.queue.poll()).orElseThrow(() -> new BusinessException(RECODE_NOT_FOUNT));
+            Runnable runnable = () -> systemAssignOrder(newParkingOrder);
+            new Thread(runnable).start();
+        }
     }
 
     //拿PB的订单
