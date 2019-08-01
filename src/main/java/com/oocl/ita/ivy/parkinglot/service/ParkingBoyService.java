@@ -139,11 +139,11 @@ public class ParkingBoyService implements BaseService<ParkingBoy, String> {
 
 
     public List<ParkingBoy> findLowerParkingBoy() {
-//        List<ParkingBoy> chooseParkingBoysLists = parkingBoyRepository.findNotInManagedParkingBoy();
-//        if (chooseParkingBoysLists.size() != 0) {
-//            chooseParkingBoysLists = chooseParkingBoysLists.stream().filter(item -> !item.isManager()).collect(Collectors.toList());
-//        }
-//        return chooseParkingBoysLists;
-        return parkingBoyRepository.findAll().stream().filter(it->!it.isManager()).collect(Collectors.toList());
+        List<ParkingBoy> chooseParkingBoysLists = parkingBoyRepository.findNotInManagedParkingBoy();
+        if (chooseParkingBoysLists.size() != 0) {
+            chooseParkingBoysLists = chooseParkingBoysLists.stream().filter(item -> !item.isManager()).collect(Collectors.toList());
+        }
+        return chooseParkingBoysLists;
+//        return parkingBoyRepository.findAll().stream().filter(it->!it.isManager()).collect(Collectors.toList());
     }
 }
