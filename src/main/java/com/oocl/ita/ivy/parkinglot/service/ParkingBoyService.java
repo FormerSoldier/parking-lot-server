@@ -33,7 +33,7 @@ public class ParkingBoyService implements BaseService<ParkingBoy, String> {
 
     @Override
     public ParkingBoy save(ParkingBoy parkingBoy) {
-        User user=userService.register(parkingBoy.getUser(), Role.PARKINGBOY);
+        User user = userService.register(parkingBoy.getUser(), Role.PARKINGBOY);
         parkingBoy.setUser(user);
         return parkingBoyRepository.save(parkingBoy);
     }
@@ -45,7 +45,7 @@ public class ParkingBoyService implements BaseService<ParkingBoy, String> {
 
     @Override
     public void deleteById(String s) {
-        ParkingBoy parkingBoy=parkingBoyRepository.findById(s).orElseThrow(() -> new BusinessException(BusinessExceptionType.RECODE_NOT_FOUNT));
+        ParkingBoy parkingBoy = parkingBoyRepository.findById(s).orElseThrow(() -> new BusinessException(BusinessExceptionType.RECODE_NOT_FOUNT));
         parkingBoy.getUser().setDeleteFlag(true);
         parkingBoyRepository.save(parkingBoy);
     }
@@ -62,17 +62,17 @@ public class ParkingBoyService implements BaseService<ParkingBoy, String> {
 
 
     public ParkingBoy setParkingLotsByID(String id, List<ParkingLot> parkingLots) {
-        ParkingBoy parkingBoy=parkingBoyRepository.findById(id).orElseThrow(() ->new BusinessException(BusinessExceptionType.RECODE_NOT_FOUNT));
+        ParkingBoy parkingBoy = parkingBoyRepository.findById(id).orElseThrow(() -> new BusinessException(BusinessExceptionType.RECODE_NOT_FOUNT));
         parkingBoy.setParkingLotList(parkingLots);
         return parkingBoyRepository.saveAndFlush(parkingBoy);
     }
 
     public List<ParkingLot> getParkingLotsByID(String id) {
-        return parkingBoyRepository.findById(id).orElseThrow(()->new BusinessException(BusinessExceptionType.RECODE_NOT_FOUNT)).getParkingLotList();
+        return parkingBoyRepository.findById(id).orElseThrow(() -> new BusinessException(BusinessExceptionType.RECODE_NOT_FOUNT)).getParkingLotList();
     }
 
     public ParkingBoy update(ParkingBoy parkingBoy) {
-        ParkingBoy oldParkingBoy=parkingBoyRepository.findById(parkingBoy.getId()).orElseThrow(() ->new BusinessException(BusinessExceptionType.RECODE_NOT_FOUNT));
+        ParkingBoy oldParkingBoy = parkingBoyRepository.findById(parkingBoy.getId()).orElseThrow(() -> new BusinessException(BusinessExceptionType.RECODE_NOT_FOUNT));
         parkingBoy.setUser(oldParkingBoy.getUser());
         return parkingBoyRepository.save(parkingBoy);
     }
@@ -88,7 +88,7 @@ public class ParkingBoyService implements BaseService<ParkingBoy, String> {
     }
 
 
-    public ParkingBoy getParkingBoyInSomeStatus(String status){
+    public ParkingBoy getParkingBoyInSomeStatus(String status) {
         return parkingBoyRepository.getParkingBoyInSomeStatus(status);
     }
 
@@ -97,13 +97,13 @@ public class ParkingBoyService implements BaseService<ParkingBoy, String> {
     }
 
     public ParkingBoy changeParkingBoyStatus(String id) {
-        ParkingBoy parkingBoy=parkingBoyRepository.findById(id).orElseThrow(()->new BusinessException(BusinessExceptionType.RECODE_NOT_FOUNT));
-        parkingBoy.setStatus(parkingBoy.getStatus()==ParkingBoyStatus.OPEN?ParkingBoyStatus.STOP:ParkingBoyStatus.OPEN);
+        ParkingBoy parkingBoy = parkingBoyRepository.findById(id).orElseThrow(() -> new BusinessException(BusinessExceptionType.RECODE_NOT_FOUNT));
+        parkingBoy.setStatus(parkingBoy.getStatus() == ParkingBoyStatus.OPEN ? ParkingBoyStatus.STOP : ParkingBoyStatus.OPEN);
         return parkingBoyRepository.save(parkingBoy);
     }
 
     public ParkingBoy upgradeToManager(String id) {
-        ParkingBoy manager = parkingBoyRepository.findById(id).orElseThrow(()->new BusinessException(BusinessExceptionType.RECODE_NOT_FOUNT));
+        ParkingBoy manager = parkingBoyRepository.findById(id).orElseThrow(() -> new BusinessException(BusinessExceptionType.RECODE_NOT_FOUNT));
         manager.setManager(true);
         List<String> roles = manager.getUser().getRoles();
         roles.add(String.valueOf(Role.MANAGER));
@@ -132,7 +132,7 @@ public class ParkingBoyService implements BaseService<ParkingBoy, String> {
     }
 
     public ParkingBoy degradeToParkingBoy(String id) {
-        ParkingBoy manager = parkingBoyRepository.findById(id).orElseThrow(()->new BusinessException(BusinessExceptionType.RECODE_NOT_FOUNT));
+        ParkingBoy manager = parkingBoyRepository.findById(id).orElseThrow(() -> new BusinessException(BusinessExceptionType.RECODE_NOT_FOUNT));
         manager.setManager(false);
         manager.getUser().setRoles(String.valueOf(Role.PARKINGBOY));
         manager.setParkingBoys(null);
@@ -140,7 +140,7 @@ public class ParkingBoyService implements BaseService<ParkingBoy, String> {
     }
 
     public List<ParkingBoy> getSubordinatesByManagerId(String managerId) {
-        ParkingBoy manager = parkingBoyRepository.findById(managerId).orElseThrow(()->new BusinessException(BusinessExceptionType.RECODE_NOT_FOUNT));
+        ParkingBoy manager = parkingBoyRepository.findById(managerId).orElseThrow(() -> new BusinessException(BusinessExceptionType.RECODE_NOT_FOUNT));
         if (manager.getParkingBoys() == null)
             return null;
         return manager.getParkingBoys();
@@ -155,22 +155,21 @@ public class ParkingBoyService implements BaseService<ParkingBoy, String> {
     }
 
     public List<ParkingBoy> getSubordinatesByUserId(Integer userId) {
-        ParkingBoy parkingBoy = Optional.of(parkingBoyRepository.findByUserId(userId)).orElseThrow(()->new BusinessException(BusinessExceptionType.RECODE_NOT_FOUNT));
+        ParkingBoy parkingBoy = Optional.of(parkingBoyRepository.findByUserId(userId)).orElseThrow(() -> new BusinessException(BusinessExceptionType.RECODE_NOT_FOUNT));
         return getSubordinatesByManagerId(parkingBoy.getId());
     }
 
     public void raiseSalary(double sum) {
         List<ParkingBoy> parkingBoys = parkingBoyRepository.findAllByDeleteFlag();
-        double points = 0;
-        for (ParkingBoy p : parkingBoys) {
-            points += p.getOrderNumInClose() + p.getOrderNumInOpen()*5;
-        }
-        for (ParkingBoy parkingBoy : parkingBoys) {
-            double pbPonit = parkingBoy.getOrderNumInClose() + parkingBoy.getOrderNumInOpen()*5;
-            double newSalary = parkingBoy.getSalary() + (pbPonit/points) * sum;
-            newSalary = Math.floor(newSalary*100)/100;
-            parkingBoy.setSalary(newSalary);
-            parkingBoyRepository.save(parkingBoy);
+        double points = parkingBoys.stream().mapToDouble(ParkingBoy::getOrderNumInOpen).sum() * 5 + parkingBoys.stream().mapToDouble(ParkingBoy::getOrderNumInClose).sum();
+        if (points > 0) {
+            for (ParkingBoy parkingBoy : parkingBoys) {
+                double pbPonit = parkingBoy.getOrderNumInClose() + parkingBoy.getOrderNumInOpen() * 5;
+                double newSalary = parkingBoy.getSalary() + (pbPonit / points) * sum;
+                newSalary = Math.floor(newSalary * 100) / 100;
+                parkingBoy.setSalary(newSalary);
+                parkingBoyRepository.save(parkingBoy);
+            }
         }
     }
 }
