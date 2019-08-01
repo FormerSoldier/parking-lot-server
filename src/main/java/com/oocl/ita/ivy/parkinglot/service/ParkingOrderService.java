@@ -112,9 +112,9 @@ public class ParkingOrderService {
         if (parkingBoyList.size() == 0) {
             throw new BusinessException(BusinessExceptionType.PARKING_BOY_NOT_AVAILABLE);
             // 如果该停车场中，没有空闲的parkingboy，那么修改订单为待取车
-            //return processingCondition(parkingOrder, OrderStatus.FETCHING);
+            //return processingCondition(parkingOrder, OrderStatus.ACCEPT_FETCH);
         }
-        parkingOrder.setOrderStatus(OrderStatus.FETCHING);
+        parkingOrder.setOrderStatus(OrderStatus.ACCEPT_FETCH);
         parkingOrder.setFetchParkingBoy(parkingBoyList.get(0));
 
         parkingBoyList.get(0).setFree(false);
