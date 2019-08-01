@@ -54,4 +54,21 @@ public class ParkingOrderController {
     public Page<ParkingOrder> parkingOrders(@PageableDefault(size = 15) Pageable pageable){
         return orderService.findAll(pageable);
     }
+    @GetMapping("/parkingboys/processingorders")
+    public ParkingBoyVo getProcessingOrderByParkingBoysId() {
+        return orderService.getProcessingOrderByParkingBoysId();
+    }
+
+    @PostMapping("/parkingboy/park")
+    public ParkingBoyVo parkingboyPark(@RequestBody String orderId){
+        orderId = orderId.substring(0,orderId.length()-1);
+        return orderService.parkingBoyPark(orderId);
+    }
+
+    @PostMapping("/parkingboy/fetch")
+    public ParkingBoyVo parkingboyFetch(@RequestBody String orderId){
+        //权衡之计，传输方式会对数据进行改变
+        orderId = orderId.substring(0,orderId.length()-1);
+        return orderService.parkingBoyFetch(orderId);
+    }
 }

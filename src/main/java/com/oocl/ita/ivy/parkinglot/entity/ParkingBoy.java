@@ -48,6 +48,7 @@ public class ParkingBoy {
 
     private boolean free;
 
+
     @Column
     @CreationTimestamp
     @NotNull
@@ -66,6 +67,8 @@ public class ParkingBoy {
     @OneToMany
     private List<ParkingBoy> parkingBoys;
 
+    private double salary;
+
     public boolean isManager() {
         return isManager;
     }
@@ -73,8 +76,6 @@ public class ParkingBoy {
     public void setManager(boolean manager) {
         isManager = manager;
     }
-
-    private double salary;
 
     @JsonIgnore
     public boolean hasFreeParkingLot(){
